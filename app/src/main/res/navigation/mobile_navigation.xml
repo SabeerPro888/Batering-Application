@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_View_Items">
+    <fragment
+        android:id="@+id/nav_View_Items"
+        android:name="com.example.barteringapp7.ui.ViewItems.ViewItemsFragment"
+        android:label="@string/menu_View_Items"
+        tools:layout="@layout/fragment_view_items" />
+    <fragment
+        android:id="@+id/nav_Upload_Items"
+        android:name="com.example.barteringapp7.ui.UploadItems.UploadItemsFragment"
+        android:label="@string/menu_Upload_Items"
+        tools:layout="@layout/fragment_upload_items" />
+    <fragment
+        android:id="@+id/nav_View_Uploads"
+        android:name="com.example.barteringapp7.ui.ViewUploads.ViewUploadsFragment"
+        android:label="@string/menu_View_Uploads"
+        tools:layout="@layout/fragment_view_uploads" />
+    <fragment
+        android:id="@+id/nav_View_Requests"
+        android:name="com.example.barteringapp7.ui.ViewRequests.ViewRequestsFragment"
+        android:label="@string/menu_View_Requests"
+        tools:layout="@layout/fragment_view_requests" />
+    <fragment
+        android:id="@+id/nav_Profile"
+        android:name="com.example.barteringapp7.ui.Profile.ProfileFragment"
+        android:label="@string/menu_Profile"
+        tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/nav_Upload_Items2"
+        android:name="com.example.barteringapp7.ui.UploadItems2.UploadItems2Fragment"
+        android:label="Category"
+        tools:layout="@layout/fragment_upload_items2" />
+
+    <fragment
+        android:id="@+id/nav_Notifications"
+        android:name="com.example.barteringapp7.ui.Notifications.NotificationsFragment"
+        android:label="Notifications"
+        tools:layout="@layout/fragment_notifications" />
+
+
+</navigation>
+

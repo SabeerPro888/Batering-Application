@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">barteringapp7</string>
+    <string name="title_activity_navigation">NavigationActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_Logout">Logout</string>
+
+
+    <string name="menu_View_Items">View Items</string>
+    <string name="menu_View_Uploads">View Uploads</string>
+    <string name="menu_View_Requests">View Requests</string>
+    <string name="menu_Profile">Profile</string>
+    <string name="menu_Notifications">Notifications</string>
+
+    <string name="menu_Upload_Items">Upload Items</string>
+
+
+</resources>

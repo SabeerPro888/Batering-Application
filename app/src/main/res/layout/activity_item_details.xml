@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ItemDetailsActivity">
+    <include layout="@layout/app_bar_layout" />
+
+    <!-- other_layout.xml -->
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/imagePager"
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
+
+
+
+    <!--    <com.google.android.material.imageview.ShapeableImageView-->
+<!--       app:shapeAppearanceOverlay="@style/extraCircular"-->
+<!--       android:layout_width="match_parent"-->
+<!--       android:layout_height="300dp"-->
+<!--       android:id="@+id/imageView1"-->
+<!--       android:src="@drawable/ic_launcher_background"/>-->
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal">-->
+<!--    <com.google.android.material.imageview.ShapeableImageView-->
+<!--        app:shapeAppearanceOverlay="@style/extraCircular"-->
+<!--        android:layout_width="100dp"-->
+<!--        android:layout_height="150dp"-->
+<!--        android:id="@+id/imageView2"-->
+<!--        android:src="@drawable/ic_launcher_background"/>-->
+<!--    <com.google.android.material.imageview.ShapeableImageView-->
+<!--        app:shapeAppearanceOverlay="@style/extraCircular"-->
+<!--        android:layout_width="100dp"-->
+<!--        android:layout_height="150dp"-->
+<!--        android:id="@+id/imageView3"-->
+<!--        android:src="@drawable/ic_launcher_background"/>-->
+<!--        <ImageView-->
+<!--            android:layout_width="100dp"-->
+<!--            android:layout_height="150dp"-->
+<!--            android:id="@+id/imageView4"-->
+<!--            android:src="@drawable/ic_launcher_background"/>-->
+<!--        <ImageView-->
+<!--            android:layout_width="100dp"-->
+<!--            android:layout_height="150dp"-->
+<!--            android:id="@+id/imageView5"-->
+<!--            android:src="@drawable/ic_launcher_background"/>-->
+
+<!--    </LinearLayout>-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/attributesContainer" >
+
+</LinearLayout>
+
+
+<TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:text="Owner Name: "
+        android:id="@+id/txtOwnerName"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:text="Veification Status: "
+        android:id="@+id/txtVerificationStatus"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:text="Rating "
+        android:id="@+id/txtRating"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:text="Item Name: "
+        android:id="@+id/txtItemName"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:text="Item Value: "
+        android:id="@+id/txtItemValue"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:text="Description "
+        android:id="@+id/txtDescriptionItemDetails"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:text="Barter With : "
+        android:id="@+id/txtBarterWith"/>
+
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:orientation="horizontal"
+
+       >
+
+       <Button
+           android:layout_width="200dp"
+           android:layout_height="wrap_content"
+           android:text="Accept"
+           android:id="@+id/btnAccept"/>
+
+       <Button
+           android:layout_marginLeft="20dp"
+           android:layout_width="200dp"
+           android:layout_height="wrap_content"
+           android:text="Reject"
+           android:id="@+id/btnReject"/>
+   </LinearLayout>
+
+
+
+</LinearLayout>
