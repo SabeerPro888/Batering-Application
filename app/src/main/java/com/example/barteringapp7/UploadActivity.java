@@ -733,41 +733,43 @@ Log.e("Json string",attributesJson);
     public void createModelSpinner(List<String> models, String subcategory) {
         modelSpinnerContainer.removeAllViews();
 
-            // Create a new Spinner instance for models
-            modelSpinner = new Spinner(this);
-            TextView modelTextView = new TextView(this);
-            modelTextView.setText("Model");
-            modelTextView.setTextSize(16);
-            modelTextView.setPadding(8, 8, 8, 8);
+        // Create a new Spinner instance for models
+        modelSpinner = new Spinner(this);
+        TextView modelTextView = new TextView(this);
+        modelTextView.setText("Model");
+        modelTextView.setTextSize(16);
+        modelTextView.setPadding(8, 8, 8, 8);
 
-            // Add the TextView to the container
-            modelSpinnerContainer.addView(modelTextView);
+        // Add the TextView to the container
+        modelSpinnerContainer.addView(modelTextView);
 
-            // Create an ArrayAdapter for the models
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, models);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            modelSpinner.setAdapter(adapter);
-            modelSpinner.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        // Create an ArrayAdapter for the models
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, models);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        modelSpinner.setAdapter(adapter);
+        modelSpinner.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        getsubcategoryattributes(subcategory);
 
-            modelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    selectedModel = (String) parent.getItemAtPosition(position);
-                    getsubcategoryattributes(subcategory);
-
+        // Set listener for model spinner
+        modelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedModel = (String) parent.getItemAtPosition(position);
                     getElectronicsAverage(selectedModel);
-                }
 
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-                    // Handle when nothing is selected
-                }
-            });
 
-            // Add the Spinner to the modelSpinnerContainer
-            modelSpinnerContainer.addView(modelSpinner);
+            }
 
-        }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Handle when nothing is selected
+            }
+        });
+
+        // Add the Spinner to the modelSpinnerContainer
+        modelSpinnerContainer.addView(modelSpinner);
+    }
+
 
 
     public void getElectronicsAverage(String model) {
@@ -821,17 +823,23 @@ Log.e("Json string",attributesJson);
     public void setOtherCategoryAttributes(List<String> attributes, String subcat) {
         AttributeSpinnerContainer.removeAllViews();
 
-        // Assuming the first attribute is the one you want to listen to
-        if (!attributes.isEmpty()) {
-            String firstAttribute = attributes.get(0);
-            View firstAttributeLayout = getLayoutInflater().inflate(R.layout.spinner_layout, null);
-            TextView firstAttributeTextView = firstAttributeLayout.findViewById(R.id.textViewAttributeName);
-            Spinner firstAttributeValueSpinner = firstAttributeLayout.findViewById(R.id.spinnerAttributeValue);
-            firstAttributeTextView.setText(firstAttribute);
+        // Iterate over each attribute
+        for (int i = 0; i < attributes.size(); i++) {
+            String attribute = attributes.get(i);
 
+            // Create a final copy of the index for use within the inner class
+            final int spinnerIndex = i;
+
+            // Inflate the layout for each attribute
+            View attributeLayout = getLayoutInflater().inflate(R.layout.spinner_layout, null);
+            TextView attributeTextView = attributeLayout.findViewById(R.id.textViewAttributeName);
+            Spinner attributeValueSpinner = attributeLayout.findViewById(R.id.spinnerAttributeValue);
+            attributeTextView.setText(attribute);
+
+            // Make API call to get values for each attribute
             APIService apiService = RetrofitClient.getRetrofitInstance().create(APIService.class);
-            Call<List<String>> firstAttributeCall = apiService.getttributevalues(subcat, firstAttribute);
-            firstAttributeCall.enqueue(new Callback<List<String>>() {
+            Call<List<String>> attributeValuesCall = apiService.getttributevalues(subcat, attribute);
+            attributeValuesCall.enqueue(new Callback<List<String>>() {
                 @Override
                 public void onResponse(Call<List<String>> call, Response<List<String>> response) {
                     if (response.isSuccessful()) {
@@ -839,20 +847,24 @@ Log.e("Json string",attributesJson);
                         if (values != null) {
                             ArrayAdapter<String> adapter = new ArrayAdapter<>(UploadActivity.this, android.R.layout.simple_spinner_item, values);
                             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            firstAttributeValueSpinner.setAdapter(adapter);
+                            attributeValueSpinner.setAdapter(adapter);
 
-                            firstAttributeValueSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                                @Override
-                                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                    String selectedValue = (String) parent.getItemAtPosition(position);
-                                    updateRecommendedPrice(selectedValue);
-                                }
+                            // Check if the current spinner is the first spinner
+                            if (spinnerIndex == 0) {
+                                // Set listener only for the first spinner
+                                attributeValueSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                    @Override
+                                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                        String selectedValue = (String) parent.getItemAtPosition(position);
+                                        updateRecommendedPrice(selectedValue);
+                                    }
 
-                                @Override
-                                public void onNothingSelected(AdapterView<?> parent) {
-                                    // Handle when nothing is selected
-                                }
-                            });
+                                    @Override
+                                    public void onNothingSelected(AdapterView<?> parent) {
+                                        // Handle when nothing is selected
+                                    }
+                                });
+                            }
                         }
                     }
                 }
@@ -862,12 +874,13 @@ Log.e("Json string",attributesJson);
                     Log.e("API Call", "Failed: " + t.getMessage());
                 }
             });
+            AttributeSpinnerContainer.addView(attributeLayout);
 
-            AttributeSpinnerContainer.addView(firstAttributeLayout);
+        }// Add the attribute layout to the container
         }
-    }
 
-    private void updateRecommendedPrice(String selectedValue) {
+
+            private void updateRecommendedPrice(String selectedValue) {
         // Here you can update the recommended price based on the selected value from the first spinner
         getElectronicsAverage(selectedValue);
     }
