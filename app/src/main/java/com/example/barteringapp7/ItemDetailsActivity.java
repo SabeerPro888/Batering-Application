@@ -1,5 +1,6 @@
 package com.example.barteringapp7;
 
+import static android.widget.FrameLayout.*;
 import static androidx.core.content.ContentProviderCompat.requireContext;
 
 import androidx.appcompat.app.AlertDialog;
@@ -11,12 +12,20 @@ import androidx.viewpager.widget.ViewPager;
 import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -27,6 +36,7 @@ import com.example.barteringapp7.ui.ViewItems.ViewItemsAdapter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
@@ -43,11 +53,11 @@ import retrofit2.Response;
 public class ItemDetailsActivity extends AppCompatActivity {
 
     ImageView img1;
-    ImageView im2;
-    ImageView im3;
-    ImageView im4;
-    ImageView im5;
-
+    ImageView img2;
+    ImageView img3;
+    ImageView img4;
+    ImageView img5;
+    Button btnMakeOffer;
     TextView tvOwnerName;
     TextView tvRating;
     TextView tvDescription;
@@ -61,20 +71,22 @@ public class ItemDetailsActivity extends AppCompatActivity {
     TextView txtVerification;
 
     LinearLayout attributesContainer;
-
+    ImageView verificationImage;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_details);
+        Items item = (Items) getIntent().getSerializableExtra("item_details");
+
         attributesContainer = findViewById(R.id.attributesContainer);
         txtVerification = findViewById(R.id.txtVerificationStatus);
 //        img1=findViewById(R.id.imageView1);
-//        im2=findViewById(R.id.imageView2);
-//        im3=findViewById(R.id.imageView3);
-//        im4=findViewById(R.id.imageView4);
-//        im5=findViewById(R.id.imageView5);
+//        img2=findViewById(R.id.imageView2);
+//        img3=findViewById(R.id.imageView3);
+//        img4=findViewById(R.id.imageView4);
+//        img5=findViewById(R.id.imageView5);
         tvOwnerName = findViewById(R.id.txtOwnerName);
         tvRating = findViewById(R.id.txtRating);
         tvDescription = findViewById(R.id.txtDescriptionItemDetails);
@@ -83,6 +95,18 @@ public class ItemDetailsActivity extends AppCompatActivity {
         tvValue = findViewById(R.id.txtItemValue);
         btnaccept = findViewById(R.id.btnAccept);
         btnReject = findViewById(R.id.btnReject);
+        btnMakeOffer=findViewById(R.id.btnMakeOffer);
+
+        btnMakeOffer.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(ItemDetailsActivity.this,Activity_MakeBarterOffer.class);
+                intent.putExtra("item_details", item);
+                startActivity(intent);            }
+        });
+
+
+        // Inside your activity or fragment
 
 
         TextView toolbarTitle = findViewById(R.id.toolbar_title);
@@ -100,9 +124,19 @@ public class ItemDetailsActivity extends AppCompatActivity {
 
 
         // Retrieve item details from intent
-        Items item = (Items) getIntent().getSerializableExtra("item_details");
 
         displayItemDetails(item);
+
+
+
+
+
+
+
+
+
+
+
 
         String email = GlobalVariables.getInstance().getEmail();
         if (email.equals("Trusted")) {
@@ -308,25 +342,22 @@ private void displayItemDetails(Items item) {
                 // Inside your activity
                 String attributesJson = itemDetails.getAttributesJson();
 
-// Use Gson to parse JSON string to Map<String, String>
+                // Use Gson to parse JSON string to Map<String, String>
                 Gson gson = new Gson();
                 Type type = new TypeToken<Map<String, String>>(){}.getType();
                 Map<String, String> attributesMap = gson.fromJson(attributesJson, type);
 
                 // Display attributes
-                // Display attributes
                 TypedValue typedValue = new TypedValue();
                 getTheme().resolveAttribute(androidx.appcompat.R.attr.colorPrimary, typedValue, true);
                 int colorPrimary = typedValue.data;
                 for (Map.Entry<String, String> entry : attributesMap.entrySet()) {
-                    // Create a horizontal LinearLayout to hold key-value pair
                     LinearLayout keyValueLayout = new LinearLayout(ItemDetailsActivity.this);
                     keyValueLayout.setOrientation(LinearLayout.HORIZONTAL);
                     keyValueLayout.setLayoutParams(new LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT));
 
-                    // Create TextView for key
                     TextView keyTextView = new TextView(ItemDetailsActivity.this);
                     keyTextView.setText(entry.getKey() + ": ");
                     keyTextView.setTextSize(20);
@@ -335,7 +366,6 @@ private void displayItemDetails(Items item) {
                             LinearLayout.LayoutParams.WRAP_CONTENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT));
 
-                    // Create TextView for value
                     TextView valueTextView = new TextView(ItemDetailsActivity.this);
                     valueTextView.setText(entry.getValue());
                     valueTextView.setLayoutParams(new LinearLayout.LayoutParams(
@@ -343,13 +373,14 @@ private void displayItemDetails(Items item) {
                             LinearLayout.LayoutParams.WRAP_CONTENT));
                     valueTextView.setTextSize(20);
 
-                    // Add TextViews to the layout
                     keyValueLayout.addView(keyTextView);
                     keyValueLayout.addView(valueTextView);
 
-                    // Add the key-value layout to the attributes container
                     attributesContainer.addView(keyValueLayout);
                 }
+
+                ViewPager viewPager = findViewById(R.id.imagePager);
+                // Create the adapter and set it to the ViewPager
 
 
                 // Load images into ViewPager
@@ -369,14 +400,13 @@ private void displayItemDetails(Items item) {
                 if (itemDetails.getImage_05() != null) {
                     imagePaths.add(RetrofitClient.BASE_URL + "BarteringAppAPI/Content/Images/" + itemDetails.getImage_05());
                 }
-
-                // Find the ViewPager
-                ViewPager viewPager = findViewById(R.id.imagePager);
-
-                // Create the adapter and set it to the ViewPager
-                ImageSliderAdapter adapter = new ImageSliderAdapter(getApplicationContext());
-                adapter.setImagePaths(imagePaths);
+                ImageSliderAdapter adapter = new ImageSliderAdapter(ItemDetailsActivity.this);
                 viewPager.setAdapter(adapter);
+                // Set image paths to the adapter
+                adapter.setImagePaths(imagePaths);
+                DisplayVerificationTick(item);
+
+
             } else {
                 Log.e("API Call", "Item details response is null");
             }
@@ -384,10 +414,24 @@ private void displayItemDetails(Items item) {
 
         @Override
         public void onFailure(Call<Items> call, Throwable t) {
-
+            Log.e("API Call", "Failed to fetch item details: " + t.getMessage());
         }
     });
 }
+    public void DisplayVerificationTick(Items item) {
+        ViewPager viewPager = findViewById(R.id.imagePager);
+        ImageSliderAdapter adapter = (ImageSliderAdapter) viewPager.getAdapter();
+
+        if (adapter != null) {
+            // Check the verification status
+            String verificationStatus = item.getVerification_status();
+            Log.d("VerificationStatus", "Status: " + verificationStatus);
+
+            // Update the visibility of the verification tick ImageView in the adapter
+            adapter.setShowVerificationTick("Verified".equalsIgnoreCase(verificationStatus));
+        }
+    }
+
 
 
 }

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -46,8 +47,13 @@ public class ViewItemsAdapter extends RecyclerView.Adapter<ViewItemsViewHolder> 
         holder.BarterFor.setText( currentItem.getBarter_for());
         String price = String.valueOf(currentItem.getPrice());
         holder.Price.setText(price);
+        String verificationStatus=currentItem.getVerification_status();
 
-
+        if ("Verified".equals(verificationStatus)) {
+            holder.verificationTickImageView.setVisibility(View.VISIBLE);
+        } else {
+            holder.verificationTickImageView.setVisibility(View.GONE);
+        }
         // Setting click listener on the item view
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,6 +66,7 @@ public class ViewItemsAdapter extends RecyclerView.Adapter<ViewItemsViewHolder> 
             }
         });
     }
+
 
     @Override
     public int getItemCount() {

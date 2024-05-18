@@ -8,11 +8,16 @@
     tools:context=".ItemDetailsActivity">
     <include layout="@layout/app_bar_layout" />
 
+
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/imagePager"
+            android:layout_width="match_parent"
+            android:layout_height="200dp" />
+
+
+
     <!-- other_layout.xml -->
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/imagePager"
-        android:layout_width="match_parent"
-        android:layout_height="200dp" />
 
 
 
@@ -114,19 +119,27 @@
        >
 
        <Button
-           android:layout_width="200dp"
+           android:layout_width="wrap_content"
            android:layout_height="wrap_content"
            android:text="Accept"
            android:id="@+id/btnAccept"/>
 
        <Button
            android:layout_marginLeft="20dp"
-           android:layout_width="200dp"
+           android:layout_width="wrap_content"
            android:layout_height="wrap_content"
            android:text="Reject"
            android:id="@+id/btnReject"/>
-   </LinearLayout>
+       <Button
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_gravity="center"
+           android:text="Make Barter Offer"
+           android:id="@+id/btnMakeOffer"
+           />
 
+
+   </LinearLayout>
 
 
 </LinearLayout>

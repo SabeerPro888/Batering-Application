@@ -5,6 +5,8 @@ import java.util.List;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -109,6 +111,10 @@ public interface APIService {
     @GET("BarteringAppAPI/api/Index/GetRecommendation") // Specify your endpoint path here
     Call<List<Items>> getRecommendedPosts(@Query("email") String email
     );
+
+    @Multipart
+    @POST("BarteringAppAPI/api/Index/SendOffer")
+    Call<String> SendOffer(@Part("SelectedItemIds") RequestBody SelectedItemIds, @Query("senderId") int senderId, @Query("RequestItemId") int itemId, @Query("price") int price);
 
 
 

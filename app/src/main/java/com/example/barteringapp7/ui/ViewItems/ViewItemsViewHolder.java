@@ -19,7 +19,7 @@ public class ViewItemsViewHolder extends RecyclerView.ViewHolder {
     ImageView image;
     TextView User;
 
-    TextView VerificationStatus;
+    ImageView verificationTickImageView;
 
     public ViewItemsViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -28,6 +28,7 @@ public class ViewItemsViewHolder extends RecyclerView.ViewHolder {
         this.User=(TextView)itemView.findViewById(R.id.txtuser);
         this.image=(ImageView)itemView.findViewById(R.id.imageViewItem);
         this.Price=(TextView)itemView.findViewById(R.id.textView7);
+        this.verificationTickImageView=(ImageView)itemView.findViewById(R.id.verificationTickImageView);
 
 
     }

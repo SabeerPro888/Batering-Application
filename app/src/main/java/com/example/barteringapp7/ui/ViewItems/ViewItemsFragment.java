@@ -75,10 +75,6 @@ public class ViewItemsFragment extends Fragment {
             }
 
         });
-
-
-
-
         return root;
     }
 

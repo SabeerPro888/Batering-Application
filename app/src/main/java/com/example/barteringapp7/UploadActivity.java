@@ -471,7 +471,7 @@ public class UploadActivity extends AppCompatActivity {
 
     public void setsubcategoryattributes(List<String> attributes,String subcat) {
 
-        if(categoryName=="Electronic Devices") {
+        if(categoryName.equals("Electronic Devices")) {
             AttributeSpinnerContainer.removeAllViews();
             for (String attribute : attributes) {
                 // Inflate the layout for each attribute
@@ -519,6 +519,7 @@ public class UploadActivity extends AppCompatActivity {
                 AttributeSpinnerContainer.addView(attributeLayout);
             }
         }else{
+            Log.e("CategoryNAme",categoryName);
             setOtherCategoryAttributes(attributes,subcat);
             }
         }
@@ -782,7 +783,8 @@ Log.e("Json string",attributesJson);
                 if (response.isSuccessful()) {
                     Double electronicsAverage = response.body();
                     Log.e("Average", model + String.valueOf(electronicsAverage));
-                    Log.e("Average", model);
+                    Log.e("Average", categoryName);
+
 
 
                     // Update UI with the average value

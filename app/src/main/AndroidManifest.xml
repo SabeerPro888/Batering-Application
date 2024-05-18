@@ -24,6 +24,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".Activity_MakeBarterOffer"
+            android:exported="false" />
+        <activity
             android:name=".RecommendedPosts"
             android:exported="false" />
         <activity
