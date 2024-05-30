@@ -1,8 +1,10 @@
 package com.example.barteringapp7.ui.ViewItems;
 
 import android.media.Image;
+import android.media.Rating;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,6 +21,8 @@ public class ViewItemsViewHolder extends RecyclerView.ViewHolder {
     ImageView image;
     TextView User;
 
+    RatingBar ratingBar;
+
     ImageView verificationTickImageView;
 
     public ViewItemsViewHolder(@NonNull View itemView) {
@@ -29,6 +33,8 @@ public class ViewItemsViewHolder extends RecyclerView.ViewHolder {
         this.image=(ImageView)itemView.findViewById(R.id.imageViewItem);
         this.Price=(TextView)itemView.findViewById(R.id.textView7);
         this.verificationTickImageView=(ImageView)itemView.findViewById(R.id.verificationTickImageView);
+
+        this.ratingBar=(RatingBar) itemView.findViewById(R.id.ratingBar);
 
 
     }

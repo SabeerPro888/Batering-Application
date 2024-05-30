@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.barteringapp7.APIService;
+import com.example.barteringapp7.GlobalVariables;
 import com.example.barteringapp7.Items;
 import com.example.barteringapp7.R;
 import com.example.barteringapp7.RetrofitClient;
@@ -41,8 +42,9 @@ public class ViewItemsFragment extends Fragment {
         binding = FragmentViewItemsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         APIService apiService = RetrofitClient.getRetrofitInstance().create(APIService.class);
+        String email= GlobalVariables.getInstance().getEmail();
 
-        Call<List<Items>> call = apiService.vewAllItems();
+        Call<List<Items>> call = apiService.vewAllItems(email);
         call.enqueue(new Callback<List<Items>>() {
 
             @Override
@@ -53,6 +55,8 @@ public class ViewItemsFragment extends Fragment {
                         Log.e("API Call", "Response Message: " + b.getItem_name());
                         Log.e("API Call", "image name Message: " + b.getImage_01());
                         Log.e("API Call", "Price " + b.getPrice());
+                        Log.e("API Call", "Price " + b.getRating());
+
                     }
                     recyclerView = root.findViewById(R.id.RecyclerView);
                     layoutManager = new LinearLayoutManager(getContext());

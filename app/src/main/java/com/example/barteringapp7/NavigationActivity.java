@@ -19,6 +19,7 @@ import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
@@ -60,13 +61,42 @@ public class NavigationActivity extends AppCompatActivity{
         // menu should be considered as top level destinations.
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_View_Items, R.id.nav_Upload_Items, R.id.nav_View_Uploads, R.id.nav_View_Requests, R.id.nav_Profile,R.id.nav_Notifications)
+                R.id.nav_View_Items, R.id.nav_Upload_Items, R.id.nav_View_Uploads, R.id.nav_View_Requests, R.id.nav_Profile,R.id.nav_Notifications,R.id.nav_history)
                 .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_navigation);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+        navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
+            @Override
+            public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, Bundle arguments) {
+                getSupportActionBar().setTitle(destination.getLabel());
+            }
+        });
 
+
+        Menu menu = navigationView.getMenu();
+        MenuItem menuItem = menu.findItem(R.id.nav_View_Requests);
+
+        // Inflate custom layout for menu item
+        View actionView = menuItem.getActionView();
+        if (actionView == null) {
+            actionView = getLayoutInflater().inflate(R.layout.menu_item_with_badge, null);
+            menuItem.setActionView(actionView);
+        }
+
+
+        TextView badge = actionView.findViewById(R.id.badge);
+
+
+
+       int notificationCount = 1; // Replace with actual count
+       if (notificationCount > 0) {
+           badge.setVisibility(View.VISIBLE);
+            badge.setText(String.valueOf(notificationCount));
+        } else {
+            badge.setVisibility(View.GONE);
+       }
 
     }
 

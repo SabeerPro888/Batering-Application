@@ -41,7 +41,9 @@ public interface APIService {
     @GET("BarteringAppAPI/api/Index/getUserId") // Specify your endpoint path here
     Call<String> getUserId(@Query("email") String email);
     @GET("BarteringAppAPI/api/Index/ShowAllItems") // This should match the endpoint defined in your ASP.NET Web API controller
-    Call<List<Items>> vewAllItems();
+    Call<List<Items>> vewAllItems(
+            @Query("email") String email
+                                              );
     @POST("BarteringAppAPI/api/Index/SendVerificationRequest") // Specify your endpoint path here
     Call<Void> sendVerificationRequest(@Query("Item_id") String item_id);
 
@@ -70,6 +72,7 @@ public interface APIService {
 
     @GET("BarteringAppAPI/api/Index/getsubcategoryAttributes") // Specify your endpoint path here
     Call<List<String>> getsubcategoryattributes(@Query("subcategory") String subcategory);
+
     @GET("BarteringAppAPI/api/Index/getattributevalues") // Specify your endpoint path here
     Call<List<String>> getttributevalues(@Query("subcategory") String subcategory,
     @Query("attributename") String attributename
@@ -108,14 +111,40 @@ public interface APIService {
     Call<Double> getElectronicsAverage(@Query("attribute") String attribute
     );
 
-    @GET("BarteringAppAPI/api/Index/GetRecommendation") // Specify your endpoint path here
+    @GET("BarteringAppAPI/api/Index/GetRecommendation1") // Specify your endpoint path here
     Call<List<Items>> getRecommendedPosts(@Query("email") String email
     );
 
     @Multipart
     @POST("BarteringAppAPI/api/Index/SendOffer")
-    Call<String> SendOffer(@Part("SelectedItemIds") RequestBody SelectedItemIds, @Query("senderId") int senderId, @Query("RequestItemId") int itemId, @Query("price") int price);
+    Call<String> SendOffer(@Part("SelectedItemIds") RequestBody SelectedItemIds, @Query("senderId") int senderId, @Query("RequestItemId") int itemId, @Query("price") int price,@Query("RequestDescription")String RequestDescription);
 
+      @GET("BarteringAppAPI/api/Index/viewRequest") // Specify your endpoint path here
+    Call<List<ViewRequestsInformation>> Viewrequests(@Query("email") String email
+    );
+
+    @GET("BarteringAppAPI/api/Index/getAllItemsForOfferId") // This should match the endpoint defined in your ASP.NET Web API controller
+    Call<List<Items>> getAllItemsForOfferId(
+            @Query("OfferId") int OfferId
+
+    );
+
+    @POST("BarteringAppAPI/api/Index/AcceptOrRejectOffer") // This should match the endpoint defined in your ASP.NET Web API controller
+    Call<Void> AcceptOrRejectOffer(
+            @Query("Numstatus") int Status,
+            @Query("Offerid") int OfferId
+
+    );
+
+    @GET("BarteringAppAPI/api/Index/ViewHistory") // This should match the endpoint defined in your ASP.NET Web API controller
+    Call<List<ViewRequestsInformation>> ViewHistory(
+            @Query("email") String Status
+
+    );
+
+    @GET("BarteringAppAPI/api/Index/GetRecommendationLastUploaded") // Specify your endpoint path here
+    Call<List<Items>> GetRecommendationLastUploaded(@Query("email") String email
+    );
 
 
 }

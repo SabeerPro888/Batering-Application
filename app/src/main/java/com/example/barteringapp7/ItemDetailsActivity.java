@@ -64,7 +64,6 @@ public class ItemDetailsActivity extends AppCompatActivity {
     TextView tvTitle;
     TextView tvBarterWith;
     TextView tvValue;
-
     Button btnaccept;
     Button btnReject;
 
@@ -142,6 +141,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
         if (email.equals("Trusted")) {
             btnaccept.setVisibility(View.VISIBLE);
             btnReject.setVisibility(View.VISIBLE);
+            btnMakeOffer.setVisibility(View.GONE);
         } else {
             btnaccept.setVisibility(View.GONE);
             btnReject.setVisibility(View.GONE);
@@ -329,13 +329,13 @@ private void displayItemDetails(Items item) {
         public void onResponse(Call<Items> call, Response<Items> response) {
             Items itemDetails = response.body();
             if (itemDetails != null) {
-                tvOwnerName.setText("Owner Name: " + itemDetails.getUser_name());
+                tvOwnerName.setText( itemDetails.getUser_name());
                 tvBarterWith.setText("Barter With: " + itemDetails.getBarter_for());
-                tvDescription.setText("Description: " + itemDetails.getDescription());
-                tvTitle.setText("Item Name: " + itemDetails.getItem_name());
-                tvValue.setText("Item Value: " + itemDetails.getPrice());
+                tvDescription.setText(itemDetails.getDescription());
+                tvTitle.setText( itemDetails.getItem_name());
+                tvValue.setText(String.valueOf(itemDetails.getPrice()));
                 txtVerification.setText("Verification Status: " + itemDetails.getVerification_status());
-
+                tvRating.setText(String.valueOf(itemDetails.getRating()));
                 // Remove existing attributes views if any
                 attributesContainer.removeAllViews();
 

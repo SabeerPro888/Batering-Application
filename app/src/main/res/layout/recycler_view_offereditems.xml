@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@drawable/custom_card_background"
+    android:layout_height="150dp">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/OfferedItemImage"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/custom_card_background"
+        android:scaleType="fitXY"
+        android:src="@drawable/baseline_info_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="28dp"
+        android:text="OfferItemName"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/OfferedItemImage"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="76dp"
+        android:text="Price"
+        android:textSize="20dp"
+        android:id="@+id/OfferedItemPrice"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/OfferedItemImage"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/OfferedItemCheckImage"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="48dp"
+        android:src="@drawable/baseline_check_circle_outline_24"
+        app:layout_constraintStart_toStartOf="@+id/OfferedItemImage"
+        app:layout_constraintTop_toTopOf="@+id/OfferedItemImage" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

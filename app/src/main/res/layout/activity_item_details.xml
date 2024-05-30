@@ -10,9 +10,22 @@
 
 
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:text="Item Name: "
+        android:id="@+id/txtItemName"/>
+
+
+
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/imagePager"
             android:layout_width="match_parent"
+            android:background="@drawable/custom_card_background"
+
             android:layout_height="200dp" />
 
 
@@ -57,52 +70,160 @@
 
 <!--    </LinearLayout>-->
 
-    <LinearLayout
-        android:layout_width="match_parent"
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    >
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/imageView7"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/custom_card_background"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_person_24"
+        app:layout_constraintStart_toStartOf="parent"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/circular" />
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/attributesContainer" >
+        android:textSize="20dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="15dp"
+        android:textStyle="bold"
+        android:text="Owner Name: "
+        android:id="@+id/txtOwnerName"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="140dp"
+        android:layout_gravity="end"
+        android:orientation="horizontal">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:text="3.5 "
+        android:id="@+id/txtRating"/>
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="13dp"
+
+        android:scaleType="fitXY"
+        android:src="@drawable/baseline_star_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/circular" />
+    </LinearLayout>
+
+
+
+
 
 </LinearLayout>
 
 
-<TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="20dp"
-        android:text="Owner Name: "
-        android:id="@+id/txtOwnerName"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="20dp"
-        android:text="Veification Status: "
-        android:id="@+id/txtVerificationStatus"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="20dp"
-        android:text="Rating "
-        android:id="@+id/txtRating"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="20dp"
-        android:text="Item Name: "
-        android:id="@+id/txtItemName"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="20dp"
-        android:text="Item Value: "
-        android:id="@+id/txtItemValue"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
         android:textSize="20dp"
-        android:text="Description "
-        android:id="@+id/txtDescriptionItemDetails"/>
+        android:text="Veification Status: "
+        android:id="@+id/txtVerificationStatus"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15dp"
+        android:layout_marginLeft="20dp"
+        android:hint="About Item"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/custom_card_background"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:layout_marginLeft="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/attributesContainer" >
+
+
+
+
+
+        </LinearLayout>
+     <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:orientation="horizontal"
+         >
+
+         <TextView
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:textSize="20dp"
+             android:textColor="@color/my_primary"
+             android:layout_marginLeft="20dp"
+             android:text="Item Value: "/>
+
+         <TextView
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:textSize="20dp"
+             android:text="Item Value: "
+             android:id="@+id/txtItemValue"/>
+     </LinearLayout>
+
+    </LinearLayout>
+
+
+
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15dp"
+        android:layout_marginLeft="20dp"
+        android:hint="Description"
+      />
+
+    <TextView
+        android:id="@+id/txtDescriptionItemDetails"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/custom_card_background"
+        android:gravity="top|start"
+        android:inputType="textMultiLine"
+        android:maxLines="10"
+        android:minLines="5"
+        android:padding="16dp"
+        android:scrollbars="vertical"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+
+
 
     <TextView
         android:layout_width="wrap_content"
@@ -111,7 +232,9 @@
         android:text="Barter With : "
         android:id="@+id/txtBarterWith"/>
 
-   <LinearLayout
+
+
+    <LinearLayout
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
        android:orientation="horizontal"
@@ -130,16 +253,27 @@
            android:layout_height="wrap_content"
            android:text="Reject"
            android:id="@+id/btnReject"/>
-       <Button
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:layout_gravity="center"
-           android:text="Make Barter Offer"
-           android:id="@+id/btnMakeOffer"
-           />
+
 
 
    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <Button
+            android:id="@+id/btnMakeOffer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="100dp"
+            android:text="Make Barter Offer" />
+
+    </LinearLayout>
+
+
 
 
 </LinearLayout>

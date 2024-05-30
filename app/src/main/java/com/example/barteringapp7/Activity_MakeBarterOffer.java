@@ -5,10 +5,13 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,10 +38,14 @@ public class Activity_MakeBarterOffer extends AppCompatActivity {
     TextView Price;
     RecyclerView_MakeBarterOfferAdapter objAdapter;
 
+    EditText descriptionBox;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_make_barter_offer);
+
+        descriptionBox=findViewById(R.id.descriptionBox);
 
         Button btnMakeBarterOffer = findViewById(R.id.btnSendOffer);
         Items item = (Items) getIntent().getSerializableExtra("item_details");
@@ -54,6 +61,13 @@ public class Activity_MakeBarterOffer extends AppCompatActivity {
         TextView toolbarTitle = findViewById(R.id.toolbar_title);
         toolbarTitle.setText("Make Offer");
 
+        ImageButton backButton = findViewById(R.id.back_button);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         populateRecyclerView();
 
         btnMakeBarterOffer.setOnClickListener(new View.OnClickListener() {
@@ -61,6 +75,10 @@ public class Activity_MakeBarterOffer extends AppCompatActivity {
             public void onClick(View v) {
                 if (objAdapter != null) {
                     MakeOffer();
+                    Intent intent=new Intent(Activity_MakeBarterOffer.this,NavigationActivity.class);
+
+                    startActivity(intent);
+
                 } else {
                     Toast.makeText(Activity_MakeBarterOffer.this, "Please wait until the items are loaded", Toast.LENGTH_SHORT).show();
                 }
@@ -158,8 +176,8 @@ public class Activity_MakeBarterOffer extends AppCompatActivity {
         String jsonStr = jsonArray.toString();
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonStr);
 
-
-        Call<String> call = apiService.SendOffer(requestBody, senderId, itemId, price);
+        String RequestDescription=descriptionBox.getText().toString();
+        Call<String> call = apiService.SendOffer(requestBody, senderId, itemId, price,RequestDescription);
 
         for(int i:selectedItemsIds){
             Log.e("Select Item ids",String.valueOf(i));
@@ -168,7 +186,7 @@ public class Activity_MakeBarterOffer extends AppCompatActivity {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(Activity_MakeBarterOffer.this, response.body().toString(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Activity_MakeBarterOffer.this, "Offer Sent", Toast.LENGTH_SHORT).show();
                     Log.e("Response Message",response.body().toString());
                 } else {
                     Toast.makeText(Activity_MakeBarterOffer.this, "Failed to send offer", Toast.LENGTH_SHORT).show();

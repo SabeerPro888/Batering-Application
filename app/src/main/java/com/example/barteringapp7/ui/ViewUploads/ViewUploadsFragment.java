@@ -68,7 +68,7 @@ public class ViewUploadsFragment extends Fragment {
                     // Corrected the variable name here
                     ArrayList<Items> ItemsArrayList = new ArrayList<>(itemslist);
 
-                    ViewItemsAdapter objAdapter = new ViewItemsAdapter(getContext(), ItemsArrayList);
+                    ViewUploadsAdapter objAdapter = new ViewUploadsAdapter(getContext(), ItemsArrayList);
                     recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
                     recyclerView.setAdapter(objAdapter);
 

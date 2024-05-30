@@ -42,5 +42,12 @@
         tools:layout="@layout/fragment_notifications" />
 
 
+    <fragment
+        android:id="@+id/nav_history"
+        android:name="com.example.barteringapp7.ui.History.HistoryFragment"
+        android:label="@string/menu_History"
+        tools:layout="@layout/fragment_history" />
+
+
 </navigation>
 

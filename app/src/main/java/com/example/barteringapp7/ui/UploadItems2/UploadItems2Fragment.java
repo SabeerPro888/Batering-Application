@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -61,7 +62,10 @@ public class UploadItems2Fragment extends Fragment {
                 List<Category> categories = response.body();
                 if (categories != null) {
                     recyclerView = binding.categoriesRecyclerView;
-                    layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+
+                    GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
+
+                    // Set the layout manager to the RecyclerView
                     recyclerView.setLayoutManager(layoutManager);
 
 

@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
@@ -24,16 +24,23 @@
             android:icon="@drawable/baseline_upload_24"
             android:title="Upload Items" />
 
-
         <item
             android:id="@+id/nav_View_Requests"
             android:icon="@mipmap/ic_view_uploads_image_foreground"
-            android:title="@string/menu_View_Requests" />
+            android:title="Requests"
+            app:actionLayout="@layout/menu_item_with_badge" />
 
         <item
             android:id="@+id/nav_Notifications"
             android:icon="@drawable/baseline_notifications_24"
             android:title="Notifications" />
+
+        <item
+            android:id="@+id/nav_history"
+            android:icon="@drawable/baseline_notifications_24"
+            android:title="History" />
+
+
 
     </group>
 </menu>

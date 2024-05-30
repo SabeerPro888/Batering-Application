@@ -138,7 +138,15 @@ public class Items implements Serializable {
     String Verification_status;
     int Verification_id;
 
+    double Rating;
 
+    public double getRating() {
+        return Rating;
+    }
+
+    public void setRating(double rating) {
+        Rating = rating;
+    }
 
     int Price;
 

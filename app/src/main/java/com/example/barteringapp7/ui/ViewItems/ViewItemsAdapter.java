@@ -3,6 +3,7 @@ package com.example.barteringapp7.ui.ViewItems;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +48,13 @@ public class ViewItemsAdapter extends RecyclerView.Adapter<ViewItemsViewHolder> 
         holder.BarterFor.setText( currentItem.getBarter_for());
         String price = String.valueOf(currentItem.getPrice());
         holder.Price.setText(price);
+        Double ratingDouble = currentItem.getRating(); // Assuming this returns a Double
+        float ratingFloat = ratingDouble != null ? ratingDouble.floatValue() : 0.0f; // Convert to float, with a default value if null
+        Log.e("Rating value",""+ratingDouble+"");
+        holder.ratingBar.setRating(ratingFloat); // Set the rating to the RatingBar
         String verificationStatus=currentItem.getVerification_status();
+
+
 
         if ("Verified".equals(verificationStatus)) {
             holder.verificationTickImageView.setVisibility(View.VISIBLE);
