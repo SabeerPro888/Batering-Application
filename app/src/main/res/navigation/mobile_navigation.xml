@@ -7,7 +7,7 @@
     <fragment
         android:id="@+id/nav_View_Items"
         android:name="com.example.barteringapp7.ui.ViewItems.ViewItemsFragment"
-        android:label="@string/menu_View_Items"
+        android:label="Home"
         tools:layout="@layout/fragment_view_items" />
     <fragment
         android:id="@+id/nav_Upload_Items"

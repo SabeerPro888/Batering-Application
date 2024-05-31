@@ -125,6 +125,7 @@ public class RecommendedPosts extends AppCompatActivity {
 
 
                 }
+
             }
 
             @Override

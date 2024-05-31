@@ -42,7 +42,7 @@ public class NavigationActivity extends AppCompatActivity{
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityNavigationBinding binding;
-
+    TextView badge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,20 +86,53 @@ public class NavigationActivity extends AppCompatActivity{
         }
 
 
-        TextView badge = actionView.findViewById(R.id.badge);
+        badge = actionView.findViewById(R.id.badge);
+
+        getRequestsNotificationCount();
 
 
 
-       int notificationCount = 1; // Replace with actual count
-       if (notificationCount > 0) {
-           badge.setVisibility(View.VISIBLE);
-            badge.setText(String.valueOf(notificationCount));
-        } else {
-            badge.setVisibility(View.GONE);
-       }
+
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getRequestsNotificationCount();
+    }
+
+
+    public void getRequestsNotificationCount(){
+        APIService apiService = RetrofitClient.getRetrofitInstance().create(APIService.class);
+        String email=GlobalVariables.getInstance().getEmail();
+        Call<Integer> call = apiService.getRequestsCount(email);
+
+        call.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if(response.isSuccessful()){
+                    int notificationCount=response.body();
+                    if (notificationCount > 0) {
+                        badge.setVisibility(View.VISIBLE);
+                        badge.setText(String.valueOf(notificationCount));
+                    } else {
+                        badge.setVisibility(View.GONE);
+                    }
+
+                }
+                else{
+                    Log.e("API CAll Response Check", "Response Not Successfull");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                Log.e("API CAll Response Check", "On Failure");
+
+            }
+        });
+    }
 
 
 
@@ -136,7 +169,8 @@ public class NavigationActivity extends AppCompatActivity{
                         notificationIcon.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                // Handle click event for the notification icon
+                                Intent intent=new Intent(NavigationActivity.this,Activity_Notification.class);
+                                startActivity(intent);
                             }
                         });
 
@@ -155,8 +189,9 @@ public class NavigationActivity extends AppCompatActivity{
                 public void onClick(View v) {
                     // Handle click event for the notification icon
                     // Navigate to the NotificationsFragment when the icon is clicked
-                   Intent intent=new Intent(NavigationActivity.this,Activity_Notification.class);
-                   startActivity(intent);
+                    Intent intent=new Intent(NavigationActivity.this,Activity_Notification.class);
+                    startActivity(intent);
+
                 }
             });
 
@@ -187,13 +222,19 @@ public class NavigationActivity extends AppCompatActivity{
     }
 
 
-
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_navigation);
-        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
-                || super.onSupportNavigateUp();
+        return NavigationUI.navigateUp(navController, mAppBarConfiguration) || super.onSupportNavigateUp();
     }
+    @Override
+    public void onBackPressed() {
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_navigation);
+        if (!navController.popBackStack()) {
+            super.onBackPressed();
+        }
+    }
+
 
 
 

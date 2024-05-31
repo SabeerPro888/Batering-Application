@@ -1,10 +1,13 @@
 package com.example.barteringapp7.ui.ViewItems;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -35,12 +38,22 @@ public class ViewItemsFragment extends Fragment {
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
 
+    ViewItemsAdapter objAdapter;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
 
         binding = FragmentViewItemsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+
+
+
+
+
+
+
         APIService apiService = RetrofitClient.getRetrofitInstance().create(APIService.class);
         String email= GlobalVariables.getInstance().getEmail();
 
@@ -65,11 +78,26 @@ public class ViewItemsFragment extends Fragment {
                     // Corrected the variable name here
                     ArrayList<Items> ItemsArrayList = new ArrayList<>(Items);
 
-                    ViewItemsAdapter objAdapter = new ViewItemsAdapter(getContext(), ItemsArrayList);
+                     objAdapter = new ViewItemsAdapter(getContext(), ItemsArrayList);
                     recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
                     recyclerView.setAdapter(objAdapter);
 
+                    TextView emptyView = root.findViewById(R.id.emptyView);
+                    objAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+                        @Override
+                        public void onChanged() {
+                            super.onChanged();
+                            if (objAdapter.getItemCount() == 0) {
+                                emptyView.setVisibility(View.VISIBLE);
+                            } else {
+                                emptyView.setVisibility(View.GONE);
+                            }
+                        }
+                    });
+
+
                 }
+
 
             }
 
@@ -79,6 +107,34 @@ public class ViewItemsFragment extends Fragment {
             }
 
         });
+
+
+        EditText searchEditText = root.findViewById(R.id.searchEditText);
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String searchText = charSequence.toString().trim();
+             objAdapter.getFilter().filter(searchText);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+
+
+
+
+
+
+
+
+
+
         return root;
     }
 

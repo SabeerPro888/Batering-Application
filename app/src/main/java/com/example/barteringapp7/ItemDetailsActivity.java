@@ -410,6 +410,7 @@ private void displayItemDetails(Items item) {
             } else {
                 Log.e("API Call", "Item details response is null");
             }
+
         }
 
         @Override

@@ -80,6 +80,7 @@ public class HistoryFragment  extends Fragment {
 
 
                 }
+
             }
 
             @Override

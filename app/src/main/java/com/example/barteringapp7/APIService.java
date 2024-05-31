@@ -146,5 +146,46 @@ public interface APIService {
     Call<List<Items>> GetRecommendationLastUploaded(@Query("email") String email
     );
 
+    @GET("BarteringAppAPI/api/Index/getRequestsCount") // This should match the endpoint defined in your ASP.NET Web API controller
+    Call<Integer> getRequestsCount(
+            @Query("email") String Status
+
+    );
+
+
+    @GET("BarteringAppAPI/api/Index/GetReceiverId") // This should match the endpoint defined in your ASP.NET Web API controller
+    Call<Integer> GetReceiverId(
+            @Query("OfferId") int OfferId
+
+    );
+
+    @GET("BarteringAppAPI/api/Index/GetSenderId") // This should match the endpoint defined in your ASP.NET Web API controller
+    Call<Integer> GetSenderId(
+            @Query("OfferId") int OfferId
+
+    );
+
+
+    @POST("BarteringAppAPI/api/Index/GiveRating") // This should match the endpoint defined in your ASP.NET Web API controller
+    Call<Void> GiveRating(
+            @Query("RatingGiver") int ReceiverId,
+            @Query("RatingTaker") int SenderId,
+            @Query("value") float value
+
+            );
+
+
+    @POST("BarteringAppAPI/api/Index/SignUP") // This should match the endpoint defined in your ASP.NET Web API controller
+        Call<String> signUp(
+                @Query("User_name") String username,
+                @Query("Password") String password,
+                @Query("Contact") String contact,
+                @Query("Email") String email,
+                @Query("Location") String location,
+                @Query("Gender") String gender
+        );
+
+
+
 
 }

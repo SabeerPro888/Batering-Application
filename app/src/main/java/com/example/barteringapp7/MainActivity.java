@@ -11,9 +11,11 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.barteringapp7.ui.UploadItems.UploadItemsViewModel;
@@ -34,12 +36,22 @@ public class MainActivity extends AppCompatActivity {
 
     private UploadItemsViewModel uploadItemsViewModel;
 
+    TextView txtSignup;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         EditText EmailEditText=findViewById(R.id.txtusername);
         EditText PasswordEditText=findViewById(R.id.txtpass);
+
+        findViewById(R.id.txtSignUp).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent =new Intent(MainActivity.this,Activity_SignUp.class);
+                startActivity(intent);
+            }
+        });
         findViewById(R.id.btnLogin).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
                                 throw new RuntimeException(e);
                             }
                         }
+
                     }
 
                     @Override

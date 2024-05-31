@@ -74,6 +74,7 @@ public class UploadItems2Fragment extends Fragment {
                     UploadItem2Adapter objAdapter = new UploadItem2Adapter(getContext(), categoryArrayList);
                     recyclerView.setAdapter(objAdapter);
                 }
+
             }
 
             @Override

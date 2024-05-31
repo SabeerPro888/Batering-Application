@@ -59,6 +59,7 @@ public class TrustedActivity extends AppCompatActivity {
 
 
                 }
+
             }
 
             @Override

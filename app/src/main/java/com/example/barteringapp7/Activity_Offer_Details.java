@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,35 +37,55 @@ public class Activity_Offer_Details extends AppCompatActivity {
     RecyclerView_OfferedItems_Adapter objAdapter;
 
     TextView Description;
-    Button AcceptButton,RejectButton;
+    Button AcceptButton, RejectButton;
 
     RatingBar rating;
-
+   int receiverId;
+   int senderId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_offer_details);
 
         ViewRequestsInformation item = (ViewRequestsInformation) getIntent().getSerializableExtra("Offer_Details");
-        if(item!=null){
-            Log.e("Offer Id",String.valueOf(item.getOffer_id()));
-        }else{
-            Log.e("Activity Offer Details","getintent is null");
+        if (item != null) {
+            Log.e("Offer Id", String.valueOf(item.getOffer_id()));
+        } else {
+            Log.e("Activity Offer Details", "getintent is null");
         }
+        GetSenderId(item.Offer_id, new OnSenderIdReceivedListener() {
+            @Override
+            public void onSenderIdReceived(int Id) {
+                // Handle the received senderId here
+                senderId=Id;
+            }
+        });
 
-        senderName=findViewById(R.id.txtRequestSenderName);
-        price=findViewById(R.id.textView9);
-        Description=findViewById(R.id.OfferdescriptionBox);
+
+
+        GetReceiverId(item.Offer_id, new OnReceiverIdReceivedListener() {
+            @Override
+            public void onReceiverIdReceived(int id) {
+                // Handle the received receiverId here
+                receiverId=id;
+            }
+        });
+
+        senderName = findViewById(R.id.txtRequestSenderName);
+        price = findViewById(R.id.textView9);
+        Description = findViewById(R.id.OfferdescriptionBox);
         Description.setText(item.getRequestInformation());
         senderName.setText(item.getSender_name().toString());
         price.setText(String.valueOf(item.getPrice()));
-        AcceptButton=findViewById(R.id.btnAcceptOffer);
-        RejectButton=findViewById(R.id.btnRejectOffer);
-        rating=findViewById(R.id.ratingBarOfferDetails);
-        Double ratingDouble=item.getRating();
+        AcceptButton = findViewById(R.id.btnAcceptOffer);
+        RejectButton = findViewById(R.id.btnRejectOffer);
+        rating = findViewById(R.id.ratingBarOfferDetails);
+        Double ratingDouble = item.getRating();
         float ratingFloat = ratingDouble != null ? ratingDouble.floatValue() : 0.0f; // Convert to float, with a default value if null
 
         rating.setRating(ratingFloat);
+
+
 
 
         populateRecyclerView(item.getOffer_id());
@@ -83,7 +104,9 @@ public class Activity_Offer_Details extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //1 means Accepted
-                AcceptOrRejectOffer(1,item.getOffer_id());
+                AcceptOrRejectOffer(1, item.getOffer_id());
+
+                showRatingDialog(senderId);
             }
         });
 
@@ -91,50 +114,94 @@ public class Activity_Offer_Details extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //0 means rejected
-                AcceptOrRejectOffer(0,item.getOffer_id());
+                AcceptOrRejectOffer(0, item.getOffer_id());
+                showRatingDialog(senderId);
+
             }
         });
 
 
-
-
-
-
-
     }
 
-    public void AcceptOrRejectOffer(int status,int Offerid){
+    private void showRatingDialog(int senderId) {
+        Dialog dialog = new Dialog(Activity_Offer_Details.this);
+        dialog.setContentView(R.layout.dialog_rating);
+
+        RatingBar ratingBar = dialog.findViewById(R.id.dialog_rating_bar);
+        Button submitButton = dialog.findViewById(R.id.submit_rating_button);
+        TextView txtSenderName = dialog.findViewById(R.id.dialog_title);
+        txtSenderName.setText("Rate " + senderName.getText().toString());
+
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                float ratingValue = ratingBar.getRating();
+                submitRating(senderId, ratingValue);
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void submitRating(int senderid, float ratingValue) {
         APIService apiService = RetrofitClient.getRetrofitInstance().create(APIService.class);
-        Call<Void> call = apiService.AcceptOrRejectOffer(status,Offerid);
+        Call<Void> call = apiService.GiveRating(receiverId,senderid, ratingValue);
+        Log.e("Receiver Id",String.valueOf(receiverId));
+        Log.e("Sender Id",String.valueOf(senderid));
+        Log.e("Rating Value",String.valueOf(ratingValue));
+
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if(response.isSuccessful()){
-                  if(status==1){
-//                      Toast.makeText(Activity_Offer_Details.this, "Accepted The Offer", Toast.LENGTH_SHORT).show();
-//                      Intent intent=new Intent(Activity_Offer_Details.this,ViewItemsFragment.class);
-//                      startActivity(intent);
+                    Toast.makeText(Activity_Offer_Details.this,"Thank you for rating",Toast.LENGTH_SHORT);
 
-                      Toast.makeText(Activity_Offer_Details.this, "Accepted The Offer", Toast.LENGTH_SHORT).show();
-                      Intent intent=new Intent(Activity_Offer_Details.this,NavigationActivity.class);
-                      startActivity(intent);
-
-
-
-
-                  }else{
-                      Toast.makeText(Activity_Offer_Details.this, "Rejected Offer", Toast.LENGTH_SHORT).show();
-
-                  }
-                }
-                else{
-                    Log.e("Response Check","Unsuccessful response");
+                    Intent intent = new Intent(Activity_Offer_Details.this, NavigationActivity.class);
+                    startActivity(intent);
                 }
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                Log.e("On Failure","On Failure");
+                Log.e("API Failure","Api went to On Failure");
+            }
+        });
+
+
+
+    }
+
+
+    public void AcceptOrRejectOffer(int status, int Offerid) {
+        APIService apiService = RetrofitClient.getRetrofitInstance().create(APIService.class);
+        Call<Void> call = apiService.AcceptOrRejectOffer(status, Offerid);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    if (status == 1) {
+//                      Toast.makeText(Activity_Offer_Details.this, "Accepted The Offer", Toast.LENGTH_SHORT).show();
+//                      Intent intent=new Intent(Activity_Offer_Details.this,ViewItemsFragment.class);
+//                      startActivity(intent);
+
+
+                        Toast.makeText(Activity_Offer_Details.this, "Accepted The Offer", Toast.LENGTH_SHORT).show();
+
+
+
+                    } else {
+                        Toast.makeText(Activity_Offer_Details.this, "Rejected Offer", Toast.LENGTH_SHORT).show();
+
+                    }
+                } else {
+                    Log.e("Response Check", "Unsuccessful response");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("On Failure", "On Failure");
 
             }
         });
@@ -160,7 +227,7 @@ public class Activity_Offer_Details extends AppCompatActivity {
                     recyclerView.setAdapter(objAdapter);
 
                     Log.e("Offered Items", "Successful Response");
-                    for(Items s:ItemsArrayList){
+                    for (Items s : ItemsArrayList) {
                         Log.e("Offered Items", s.getItem_name());
 
                     }
@@ -175,4 +242,57 @@ public class Activity_Offer_Details extends AppCompatActivity {
             }
         });
     }
+
+    public void GetSenderId(int OfferId, final OnSenderIdReceivedListener listener) {
+        APIService apiService = RetrofitClient.getRetrofitInstance().create(APIService.class);
+        Call<Integer> call = apiService.GetSenderId(OfferId);
+        call.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if (response.isSuccessful()) {
+                    int senderId = response.body();
+                    // Pass the received senderId to the listener
+                    listener.onSenderIdReceived(senderId);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                // Handle failure if needed
+            }
+        });
+    }
+
+    // Define an interface for callback
+    interface OnSenderIdReceivedListener {
+        void onSenderIdReceived(int senderId);
+    }
+
+    public void GetReceiverId(int OfferId, final OnReceiverIdReceivedListener listener) {
+        APIService apiService = RetrofitClient.getRetrofitInstance().create(APIService.class);
+        Call<Integer> call = apiService.GetReceiverId(OfferId);
+        call.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if (response.isSuccessful()) {
+                    int receiverId = response.body();
+                    // Pass the received receiverId to the listener
+                    listener.onReceiverIdReceived(receiverId);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                // Handle failure if needed
+            }
+        });
+    }
+
+    // Define an interface for callback
+    interface OnReceiverIdReceivedListener {
+        void onReceiverIdReceived(int receiverId);
+    }
+
+
+
 }

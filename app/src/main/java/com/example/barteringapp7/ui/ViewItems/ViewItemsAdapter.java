@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,16 +22,20 @@ import com.example.barteringapp7.RetrofitClient;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class ViewItemsAdapter extends RecyclerView.Adapter<ViewItemsViewHolder> {
+public class ViewItemsAdapter extends RecyclerView.Adapter<ViewItemsViewHolder> implements Filterable {
     private ArrayList<Items> ItemsList;
     private Context context;
+
+    private List<Items> itemListFiltered;
+
 
     // Constructor
     public ViewItemsAdapter(Context context, ArrayList<Items> ItemsList) {
         this.context = context;
         this.ItemsList = ItemsList;
-    }
+        this.itemListFiltered = new ArrayList<>(ItemsList);    }
 
     @NonNull
     @Override
@@ -40,7 +46,7 @@ public class ViewItemsAdapter extends RecyclerView.Adapter<ViewItemsViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ViewItemsViewHolder holder, int position) {
-        Items currentItem = ItemsList.get(position);
+        Items currentItem = itemListFiltered.get(position); // Change here
         String imagePath = RetrofitClient.BASE_URL + "BarteringAppAPI/Content/Images/" + currentItem.getImage_01();
         Picasso.get().load(imagePath).into(holder.image);
         holder.Title.setText(currentItem.getItem_name());
@@ -77,8 +83,40 @@ public class ViewItemsAdapter extends RecyclerView.Adapter<ViewItemsViewHolder> 
 
     @Override
     public int getItemCount() {
-        return ItemsList.size();
+        return itemListFiltered.size();
     }
 
 
-}
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                String charString = charSequence.toString().toLowerCase().trim();
+
+                if (charString.isEmpty()) {
+                    itemListFiltered = ItemsList;
+                } else {
+                    List<Items> filteredList = new ArrayList<>();
+                    for (Items item : ItemsList) {
+                        if (item.getItem_name().toLowerCase().contains(charString)) {
+                            filteredList.add(item);
+                        }
+                    }
+                    itemListFiltered = filteredList;
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = itemListFiltered;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                itemListFiltered = (List<Items>) filterResults.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
+    }
+

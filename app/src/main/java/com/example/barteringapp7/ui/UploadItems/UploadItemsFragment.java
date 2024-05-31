@@ -318,6 +318,7 @@ String email=GlobalVariables.getInstance().getEmail();
                     spinnerCategory.setAdapter(categoryAdapter);
 
                 }
+
             }
 
             @Override
@@ -516,6 +517,7 @@ String email=GlobalVariables.getInstance().getEmail();
                     // Handle unsuccessful response
                     Log.e(TAG, "Failed to send verification request. Response code: " + response.code());
                 }
+
             }
 
             @Override
