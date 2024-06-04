@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="20dp"
+    android:layout_marginBottom="40dp"
     android:background="@drawable/custom_card_background"
     >
     <androidx.cardview.widget.CardView
@@ -25,6 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/white">
+
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/imageViewItem"
                 android:layout_width="match_parent"
@@ -122,11 +123,26 @@
                 app:srcCompat="@drawable/baseline_check_circle_outline_24" />
 
 
+            <TextView
+                android:id="@+id/txtisSold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="44dp"
+                android:layout_marginEnd="104dp"
+                android:text="Sold"
+                android:textSize="100dp"
+                android:textColor="@color/Gray"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/imageViewItem"
+                app:layout_constraintTop_toTopOf="@+id/imageViewItem" />
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 
 
     </androidx.cardview.widget.CardView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,16 +9,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.barteringapp7.ui.ViewItems.ViewItemsFragment;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +45,8 @@ public class Activity_Offer_Details extends AppCompatActivity {
     RatingBar rating;
    int receiverId;
    int senderId;
+
+   ImageView profilepic;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,10 +85,17 @@ public class Activity_Offer_Details extends AppCompatActivity {
         AcceptButton = findViewById(R.id.btnAcceptOffer);
         RejectButton = findViewById(R.id.btnRejectOffer);
         rating = findViewById(R.id.ratingBarOfferDetails);
+        profilepic=findViewById(R.id.imageView7);
         Double ratingDouble = item.getRating();
         float ratingFloat = ratingDouble != null ? ratingDouble.floatValue() : 0.0f; // Convert to float, with a default value if null
 
         rating.setRating(ratingFloat);
+
+        if(item.getProfilePic()!=null){
+            String ProfilePic = RetrofitClient.BASE_URL + "BarteringAppAPI/Content/Images/" + item.getProfilePic();
+            Picasso.get().load(ProfilePic).into(profilepic);
+
+        }
 
 
 
@@ -106,7 +118,6 @@ public class Activity_Offer_Details extends AppCompatActivity {
                 //1 means Accepted
                 AcceptOrRejectOffer(1, item.getOffer_id());
 
-                showRatingDialog(senderId);
             }
         });
 
@@ -115,7 +126,6 @@ public class Activity_Offer_Details extends AppCompatActivity {
             public void onClick(View v) {
                 //0 means rejected
                 AcceptOrRejectOffer(0, item.getOffer_id());
-                showRatingDialog(senderId);
 
             }
         });
@@ -157,8 +167,7 @@ public class Activity_Offer_Details extends AppCompatActivity {
                 if(response.isSuccessful()){
                     Toast.makeText(Activity_Offer_Details.this,"Thank you for rating",Toast.LENGTH_SHORT);
 
-                    Intent intent = new Intent(Activity_Offer_Details.this, NavigationActivity.class);
-                    startActivity(intent);
+
                 }
             }
 
@@ -187,11 +196,16 @@ public class Activity_Offer_Details extends AppCompatActivity {
 
 
                         Toast.makeText(Activity_Offer_Details.this, "Accepted The Offer", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(Activity_Offer_Details.this, NavigationActivity.class);
+                        startActivity(intent);
 
 
 
                     } else {
                         Toast.makeText(Activity_Offer_Details.this, "Rejected Offer", Toast.LENGTH_SHORT).show();
+
+                        Intent intent = new Intent(Activity_Offer_Details.this, NavigationActivity.class);
+                        startActivity(intent);
 
                     }
                 } else {

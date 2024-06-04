@@ -1,5 +1,7 @@
 package com.example.barteringapp7;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -150,6 +152,38 @@ public class Items implements Serializable {
 
     int Price;
 
+    String isSold;
+
+
+
+    private int User_id;
+
+    public int getUserId() {
+        return User_id;
+    }
+
+    public void setUserId(int userId) {
+        this.User_id = userId;
+    }
+
+    public String getProfilePic() {
+        return ProfilePic;
+    }
+
+    public void setProfilePic(String profilePic) {
+        ProfilePic = profilePic;
+    }
+
+    String ProfilePic;
+
+
+    public String getIsSold() {
+        return isSold;
+    }
+
+    public void setIsSold(String isSold) {
+        this.isSold = isSold;
+    }
 
     int Item_id;
 

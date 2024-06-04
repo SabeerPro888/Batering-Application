@@ -10,6 +10,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.example.barteringapp7.ui.ViewItems.ViewItemsAdapter;
 
@@ -23,11 +26,19 @@ import retrofit2.Response;
 public class TrustedActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
-
+    TextView noVerificationRequests;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trusted);
+        TextView toolbarTitle = findViewById(R.id.toolbar_title);
+        noVerificationRequests=findViewById(R.id.noVerificationRequests);
+
+
+        toolbarTitle.setText("Verification Requests");
+        ImageButton backButton = findViewById(R.id.back_button);
+        backButton.setVisibility(View.GONE);
+
 
         APIService apiService = RetrofitClient.getRetrofitInstance().create(APIService.class);
 
@@ -46,16 +57,24 @@ public class TrustedActivity extends AppCompatActivity {
 
 
                     }
-                    recyclerView = findViewById(R.id.TrustedRecyclerView);
-                    layoutManager = new LinearLayoutManager(TrustedActivity.this);
-                    recyclerView.setLayoutManager(layoutManager);
 
-                    // Corrected the variable name here
-                    ArrayList<Items> ItemsArrayList = new ArrayList<>(Items);
+                    if(Items.size()!=0){
+                        recyclerView = findViewById(R.id.TrustedRecyclerView);
+                        layoutManager = new LinearLayoutManager(TrustedActivity.this);
+                        recyclerView.setLayoutManager(layoutManager);
 
-                    ViewItemsAdapter objAdapter = new ViewItemsAdapter(TrustedActivity.this, ItemsArrayList);
-                    recyclerView.addItemDecoration(new DividerItemDecoration(TrustedActivity.this, LinearLayoutManager.VERTICAL));
-                    recyclerView.setAdapter(objAdapter);
+                        // Corrected the variable name here
+                        ArrayList<Items> ItemsArrayList = new ArrayList<>(Items);
+
+                        ViewItemsAdapter objAdapter = new ViewItemsAdapter(TrustedActivity.this, ItemsArrayList);
+                        recyclerView.addItemDecoration(new DividerItemDecoration(TrustedActivity.this, LinearLayoutManager.VERTICAL));
+                        recyclerView.setAdapter(objAdapter);
+                        noVerificationRequests.setVisibility(View.GONE);
+                    }else{
+                        noVerificationRequests.setVisibility(View.VISIBLE);
+
+                    }
+
 
 
                 }
@@ -68,5 +87,16 @@ public class TrustedActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void onLogoutClick(View view) {
+        // Clear any user session data here, if applicable
+        // For example, clear shared preferences or any cached user data
+
+        // Navigate to the login screen
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 }

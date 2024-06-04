@@ -185,6 +185,29 @@ public interface APIService {
                 @Query("Gender") String gender
         );
 
+    @GET("BarteringAppAPI/api/Index/getUserDetails") // This should match the endpoint defined in your ASP.NET Web API controller
+    Call<User> getUserDetails(
+            @Query("email") String email
+
+    );
+
+
+    @Multipart
+    @POST("BarteringAppAPI/api/Index/UpdateProfile") // Change this to your actual endpoint
+    Call<String> uploadImage(
+            @Query("email") String email,
+            @Part MultipartBody.Part image,
+            @Part("contact") RequestBody contact,
+            @Part("password") RequestBody password
+    );
+
+
+
+    @POST("BarteringAppAPI/api/Index/confirmOfferReceiver") // Specify your endpoint path here
+    Call<Void> confirmOfferReceiver(@Query("offerId") int OfferId);
+
+    @POST("BarteringAppAPI/api/Index/confirmOfferSender") // Specify your endpoint path here
+    Call<Void> confirmOfferSender(@Query("offerId") int OfferId);
 
 
 

@@ -69,6 +69,7 @@ public class ViewItemsFragment extends Fragment {
                         Log.e("API Call", "image name Message: " + b.getImage_01());
                         Log.e("API Call", "Price " + b.getPrice());
                         Log.e("API Call", "Price " + b.getRating());
+                        Log.e("API CALL","User ID"+b.getUserId());
 
                     }
                     recyclerView = root.findViewById(R.id.RecyclerView);

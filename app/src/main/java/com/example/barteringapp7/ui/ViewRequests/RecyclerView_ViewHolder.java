@@ -3,6 +3,7 @@ package com.example.barteringapp7.ui.ViewRequests;
 import android.media.Rating;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -16,6 +17,7 @@ public class RecyclerView_ViewHolder extends RecyclerView.ViewHolder {
     TextView txtRequestedItemName;
     TextView txtSenderName;
 
+    ImageView Profile;
     RatingBar ratingBar;
     Button btndetails;
     public RecyclerView_ViewHolder(@NonNull View itemView) {
@@ -24,6 +26,7 @@ public class RecyclerView_ViewHolder extends RecyclerView.ViewHolder {
         this.txtSenderName=(TextView)itemView.findViewById(R.id.txtRequestSenderName);
         this.btndetails=(Button)itemView.findViewById(R.id.btnViewRequestDetails);
         this.ratingBar=(RatingBar)itemView.findViewById(R.id.ratingBarRequests);
+        this.Profile=(ImageView) itemView.findViewById(R.id.imageView7);
 
 
 

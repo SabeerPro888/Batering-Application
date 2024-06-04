@@ -93,7 +93,15 @@ public class Activity_MakeBarterOffer extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<Items>> call, Response<List<Items>> response) {
                 if (response.isSuccessful()) {
-                    List<Items> itemslist = response.body();
+                    List<Items> itemslist1 = response.body();
+                    List<Items> itemslist = new ArrayList<>();
+                    for(Items i:itemslist1){
+                        if("No".equals(i.getIsSold())){
+                            itemslist.add(i);
+                        }
+                    }
+
+
                     recyclerView = findViewById(R.id.yourItemsRecyclerView);
                     layoutManager = new LinearLayoutManager(Activity_MakeBarterOffer.this);
                     recyclerView.setLayoutManager(layoutManager);

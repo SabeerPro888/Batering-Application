@@ -11,7 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.barteringapp7.Activity_Offer_Details;
 import com.example.barteringapp7.R;
+import com.example.barteringapp7.RetrofitClient;
 import com.example.barteringapp7.ViewRequestsInformation;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -38,6 +40,11 @@ public class RecyclerView_Adapter<R extends RecyclerView.ViewHolder> extends Rec
         Double ratingDouble=currentItem.getRating();
         float ratingFloat = ratingDouble != null ? ratingDouble.floatValue() : 0.0f; // Convert to float, with a default value if null
 
+        if(currentItem.getProfilePic()!=null){
+            String ProfilePic = RetrofitClient.BASE_URL + "BarteringAppAPI/Content/Images/" + currentItem.getProfilePic();
+            Picasso.get().load(ProfilePic).into(holder.Profile);
+
+        }
         holder.ratingBar.setRating(ratingFloat);
 
         holder.btndetails.setOnClickListener(new View.OnClickListener() {

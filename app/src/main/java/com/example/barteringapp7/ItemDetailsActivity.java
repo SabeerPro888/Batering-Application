@@ -72,12 +72,15 @@ public class ItemDetailsActivity extends AppCompatActivity {
     LinearLayout attributesContainer;
     ImageView verificationImage;
 
+    ImageView Profile;
+
+    Items item;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_details);
-        Items item = (Items) getIntent().getSerializableExtra("item_details");
+         item = (Items) getIntent().getSerializableExtra("item_details");
 
         attributesContainer = findViewById(R.id.attributesContainer);
         txtVerification = findViewById(R.id.txtVerificationStatus);
@@ -128,7 +131,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
 
 
 
-
+        hideBarterForButton();
 
 
 
@@ -138,7 +141,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
 
 
         String email = GlobalVariables.getInstance().getEmail();
-        if (email.equals("Trusted")) {
+        if (email.equals("Trusted") || email.equals("trusted")) {
             btnaccept.setVisibility(View.VISIBLE);
             btnReject.setVisibility(View.VISIBLE);
             btnMakeOffer.setVisibility(View.GONE);
@@ -338,6 +341,13 @@ private void displayItemDetails(Items item) {
                 tvRating.setText(String.valueOf(itemDetails.getRating()));
                 // Remove existing attributes views if any
                 attributesContainer.removeAllViews();
+                 Profile=findViewById(R.id.imageView7);
+
+                if(itemDetails.getProfilePic()!=null){
+                    String ProfilePic = RetrofitClient.BASE_URL + "BarteringAppAPI/Content/Images/" + itemDetails.getProfilePic();
+                    Picasso.get().load(ProfilePic).into(Profile);
+
+                }
 
                 // Inside your activity
                 String attributesJson = itemDetails.getAttributesJson();
@@ -433,6 +443,36 @@ private void displayItemDetails(Items item) {
         }
     }
 
+    public void hideBarterForButton(){
+        APIService apiService = RetrofitClient.getRetrofitInstance().create(APIService.class);
+        String email=GlobalVariables.getInstance().getEmail();
+        Call<String> call = apiService.getUserId(email);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if(response.isSuccessful()){
+
+                    int myId=Integer.parseInt(response.body());
+                    int hisId=item.getUserId();
+
+                    Log.e("His ID",String.valueOf(hisId));
+                    Log.e("MyId ID",String.valueOf(myId));
+
+                    if(myId==hisId){
+                        btnMakeOffer.setVisibility(View.GONE);
+                    }else{
+                        btnMakeOffer.setVisibility(View.VISIBLE);
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+            }
+        });
+    }
 
 
 }

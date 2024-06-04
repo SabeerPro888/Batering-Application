@@ -19,6 +19,7 @@ import com.example.barteringapp7.ItemDetailsActivity;
 import com.example.barteringapp7.Items;
 import com.example.barteringapp7.R;
 import com.example.barteringapp7.RetrofitClient;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -49,6 +50,12 @@ public class ViewItemsAdapter extends RecyclerView.Adapter<ViewItemsViewHolder> 
         Items currentItem = itemListFiltered.get(position); // Change here
         String imagePath = RetrofitClient.BASE_URL + "BarteringAppAPI/Content/Images/" + currentItem.getImage_01();
         Picasso.get().load(imagePath).into(holder.image);
+        if(currentItem.getProfilePic()!=null){
+            String ProfilePic = RetrofitClient.BASE_URL + "BarteringAppAPI/Content/Images/" + currentItem.getProfilePic();
+            Picasso.get().load(ProfilePic).into(holder.profile);
+
+        }
+
         holder.Title.setText(currentItem.getItem_name());
         holder.User.setText(currentItem.getUser_name());
         holder.BarterFor.setText( currentItem.getBarter_for());
@@ -76,6 +83,9 @@ public class ViewItemsAdapter extends RecyclerView.Adapter<ViewItemsViewHolder> 
                 Intent intent = new Intent(context, ItemDetailsActivity.class);
                 intent.putExtra("item_details", currentItem);
                 context.startActivity(intent);
+
+
+                Log.d("API Response", new Gson().toJson(currentItem));
             }
         });
     }

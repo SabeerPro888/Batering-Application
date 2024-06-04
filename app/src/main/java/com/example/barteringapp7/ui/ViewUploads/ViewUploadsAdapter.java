@@ -11,6 +11,8 @@ import android.widget.RatingBar;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.barteringapp7.APIService;
+import com.example.barteringapp7.GlobalVariables;
 import com.example.barteringapp7.ItemDetailsActivity;
 import com.example.barteringapp7.Items;
 import com.example.barteringapp7.R;
@@ -19,10 +21,16 @@ import com.example.barteringapp7.ui.ViewItems.ViewItemsViewHolder;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ViewUploadsAdapter extends RecyclerView.Adapter<ViewUploadsHolder> {
     private ArrayList<Items> ItemsList;
     private Context context;
+    Items currentItem;
 
     public ViewUploadsAdapter(Context context, ArrayList<Items> ItemsList) {
         this.context = context;
@@ -38,7 +46,7 @@ public class ViewUploadsAdapter extends RecyclerView.Adapter<ViewUploadsHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ViewUploadsHolder holder, int position) {
-        Items currentItem = ItemsList.get(position);
+         currentItem = ItemsList.get(position);
         String imagePath = RetrofitClient.BASE_URL + "BarteringAppAPI/Content/Images/" + currentItem.getImage_01();
         Picasso.get().load(imagePath).into(holder.image);
         holder.Title.setText(currentItem.getItem_name());
@@ -46,8 +54,20 @@ public class ViewUploadsAdapter extends RecyclerView.Adapter<ViewUploadsHolder> 
         String price = String.valueOf(currentItem.getPrice());
         holder.Price.setText(price);
         String verificationStatus=currentItem.getVerification_status();
+        String isSold= currentItem.getIsSold();
 
 
+
+
+
+        if("Yes".equals(isSold)){
+            holder.isSold.setVisibility(View.VISIBLE);
+            holder.image.setAlpha(0.5f);
+        }else{
+            holder.isSold.setVisibility(View.GONE);
+            holder.image.setAlpha(1.0f);  // Set opacity back to 100%
+
+        }
 
         if ("Verified".equals(verificationStatus)) {
             holder.verificationTickImageView.setVisibility(View.VISIBLE);
@@ -67,6 +87,7 @@ public class ViewUploadsAdapter extends RecyclerView.Adapter<ViewUploadsHolder> 
         });
 
     }
+
 
 
 

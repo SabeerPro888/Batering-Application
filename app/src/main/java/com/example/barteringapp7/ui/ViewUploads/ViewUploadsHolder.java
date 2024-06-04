@@ -16,7 +16,7 @@ public class ViewUploadsHolder extends RecyclerView.ViewHolder {
     TextView Price;
     ImageView image;
     TextView User;
-
+    TextView isSold;
     RatingBar ratingBar;
 
     ImageView verificationTickImageView;
@@ -31,5 +31,6 @@ public class ViewUploadsHolder extends RecyclerView.ViewHolder {
         this.Price=(TextView)itemView.findViewById(R.id.textView7);
         this.verificationTickImageView=(ImageView)itemView.findViewById(R.id.verificationTickImageView);
         this.ratingBar=(RatingBar) itemView.findViewById(R.id.ratingBar);
+        this.isSold=(TextView)itemView.findViewById(R.id.txtisSold);
     }
 }

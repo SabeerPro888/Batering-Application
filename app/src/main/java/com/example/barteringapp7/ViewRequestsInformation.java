@@ -14,6 +14,62 @@ public class ViewRequestsInformation implements Serializable {
 
     Double Rating;
 
+    String ConfirmOfferRequestReceiver;
+    String ConfirmOfferRequestSeder;
+
+    public String getProfilePic() {
+        return ProfilePic;
+    }
+
+    public void setProfilePic(String profilePic) {
+        ProfilePic = profilePic;
+    }
+
+    String ProfilePic;
+
+    public String getConfirmOfferRequestReceiver() {
+        return ConfirmOfferRequestReceiver;
+    }
+
+    public void setConfirmOfferRequestReceiver(String confirmOfferRequestReceiver) {
+        ConfirmOfferRequestReceiver = confirmOfferRequestReceiver;
+    }
+
+    public String getConfirmOfferRequestSeder() {
+        return ConfirmOfferRequestSeder;
+    }
+
+    public void setConfirmOfferRequestSeder(String confirmOfferRequestSeder) {
+        ConfirmOfferRequestSeder = confirmOfferRequestSeder;
+    }
+
+    public int getSenderId() {
+        return senderId;
+    }
+
+    public void setSenderId(int senderId) {
+        this.senderId = senderId;
+    }
+
+    public int getReceiverId() {
+        return ReceiverId;
+    }
+
+    public void setReceiverId(int receiverId) {
+        ReceiverId = receiverId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public int senderId;
+    public int ReceiverId;
+
     public Double getRating() {
         return Rating;
     }

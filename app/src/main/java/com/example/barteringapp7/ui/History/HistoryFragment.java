@@ -74,7 +74,7 @@ public class HistoryFragment  extends Fragment {
                     // Corrected the variable name here
                     ArrayList<ViewRequestsInformation> ItemsArrayList = new ArrayList<>(Items);
 
-                    HistoryAdapter objAdapter = new HistoryAdapter(getContext(), ItemsArrayList);
+                    HistoryAdapter objAdapter = new HistoryAdapter(getContext(), getActivity(), ItemsArrayList);
                     recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
                     recyclerView.setAdapter(objAdapter);
 

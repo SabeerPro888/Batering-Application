@@ -38,7 +38,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class NavigationActivity extends AppCompatActivity{
+public class NavigationActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityNavigationBinding binding;
@@ -50,18 +50,13 @@ public class NavigationActivity extends AppCompatActivity{
         binding = ActivityNavigationBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-
         setSupportActionBar(binding.appBarNavigation.toolbar);
-
 
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
 
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_View_Items, R.id.nav_Upload_Items, R.id.nav_View_Uploads, R.id.nav_View_Requests, R.id.nav_Profile,R.id.nav_Notifications,R.id.nav_history)
+                R.id.nav_View_Items, R.id.nav_Upload_Items, R.id.nav_View_Uploads, R.id.nav_View_Requests, R.id.nav_Profile, R.id.nav_Notifications, R.id.nav_history)
                 .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_navigation);
@@ -74,26 +69,19 @@ public class NavigationActivity extends AppCompatActivity{
             }
         });
 
+        // Set the navigation item selected listener
+        navigationView.setNavigationItemSelectedListener(this);
 
         Menu menu = navigationView.getMenu();
         MenuItem menuItem = menu.findItem(R.id.nav_View_Requests);
-
-        // Inflate custom layout for menu item
         View actionView = menuItem.getActionView();
         if (actionView == null) {
             actionView = getLayoutInflater().inflate(R.layout.menu_item_with_badge, null);
             menuItem.setActionView(actionView);
         }
 
-
         badge = actionView.findViewById(R.id.badge);
-
         getRequestsNotificationCount();
-
-
-
-
-
     }
 
     @Override
@@ -102,131 +90,103 @@ public class NavigationActivity extends AppCompatActivity{
         getRequestsNotificationCount();
     }
 
-
-    public void getRequestsNotificationCount(){
+    public void getRequestsNotificationCount() {
         APIService apiService = RetrofitClient.getRetrofitInstance().create(APIService.class);
-        String email=GlobalVariables.getInstance().getEmail();
+        String email = GlobalVariables.getInstance().getEmail();
         Call<Integer> call = apiService.getRequestsCount(email);
 
         call.enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
-                if(response.isSuccessful()){
-                    int notificationCount=response.body();
+                if (response.isSuccessful()) {
+                    int notificationCount = response.body();
                     if (notificationCount > 0) {
                         badge.setVisibility(View.VISIBLE);
                         badge.setText(String.valueOf(notificationCount));
                     } else {
                         badge.setVisibility(View.GONE);
                     }
-
-                }
-                else{
-                    Log.e("API CAll Response Check", "Response Not Successfull");
+                } else {
+                    Log.e("API Call Response Check", "Response Not Successful");
                 }
             }
 
             @Override
             public void onFailure(Call<Integer> call, Throwable t) {
-                Log.e("API CAll Response Check", "On Failure");
-
+                Log.e("API Call Response Check", "On Failure");
             }
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
 
-
-
-        // Inflate the menu; this adds items to the action bar if it is present.
-        @Override
-        public boolean onCreateOptionsMenu(Menu menu) {
-            getMenuInflater().inflate(R.menu.toolbar_menu, menu);
-
-            // Get the MenuItem for the notification
-            MenuItem menuItem = menu.findItem(R.id.action_notification);
-
-            // Get the custom layout view for the notification icon
-            View actionView = MenuItemCompat.getActionView(menuItem);
-            ImageView notificationIcon = actionView.findViewById(R.id.notification_icon);
-            TextView notificationBadge = actionView.findViewById(R.id.notification_badge);
-            APIService apiService = RetrofitClient.getRetrofitInstance().create(APIService.class);
-            String email= GlobalVariables.getInstance().getEmail();
-            Call<Integer> call = apiService.getNotificationsCount(email);
-            call.enqueue(new Callback<Integer>() {
-                @Override
-                public void onResponse(Call<Integer> call, Response<Integer> response) {
-                    if(response.isSuccessful()){
-                        int notificationCount = response.body(); // Example count, replace with your actual logic
-
-                        if (notificationCount > 0) {
-                            notificationBadge.setVisibility(View.VISIBLE);
-                            notificationBadge.setText(String.valueOf(notificationCount));
-                        } else {
-                            notificationBadge.setVisibility(View.GONE);
-                        }
-
-                        // Set click listener for the notification icon if needed
-                        notificationIcon.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent intent=new Intent(NavigationActivity.this,Activity_Notification.class);
-                                startActivity(intent);
-                            }
-                        });
-
-                    }else{
-
+        MenuItem menuItem = menu.findItem(R.id.action_notification);
+        View actionView = MenuItemCompat.getActionView(menuItem);
+        ImageView notificationIcon = actionView.findViewById(R.id.notification_icon);
+        TextView notificationBadge = actionView.findViewById(R.id.notification_badge);
+        APIService apiService = RetrofitClient.getRetrofitInstance().create(APIService.class);
+        String email = GlobalVariables.getInstance().getEmail();
+        Call<Integer> call = apiService.getNotificationsCount(email);
+        call.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if (response.isSuccessful()) {
+                    int notificationCount = response.body();
+                    if (notificationCount > 0) {
+                        notificationBadge.setVisibility(View.VISIBLE);
+                        notificationBadge.setText(String.valueOf(notificationCount));
+                    } else {
+                        notificationBadge.setVisibility(View.GONE);
                     }
+                    notificationIcon.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(NavigationActivity.this, Activity_Notification.class);
+                            startActivity(intent);
+                        }
+                    });
                 }
+            }
 
-                @Override
-                public void onFailure(Call<Integer> call, Throwable t) {
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                // Handle the failure
+            }
+        });
 
-                }
-            });
-            notificationBadge.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Handle click event for the notification icon
-                    // Navigate to the NotificationsFragment when the icon is clicked
-                    Intent intent=new Intent(NavigationActivity.this,Activity_Notification.class);
-                    startActivity(intent);
+        notificationBadge.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(NavigationActivity.this, Activity_Notification.class);
+                startActivity(intent);
+            }
+        });
 
-                }
-            });
-
-
-
-
-
-
-            // Set up your notification count logic here
-
-            return true;
-        }
+        return true;
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         if (id == R.id.action_Logout) {
-            // Perform logout action here
-            // For example, navigate to the sign-in page
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
-            finish(); // Optional: Finish the current activity to prevent the user from coming back to it via the back button
+            finish();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_navigation);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration) || super.onSupportNavigateUp();
     }
+
     @Override
     public void onBackPressed() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_navigation);
@@ -235,7 +195,18 @@ public class NavigationActivity extends AppCompatActivity{
         }
     }
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
 
+        if (id == R.id.nav_logout) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+            return true;
+        }
 
-
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_navigation);
+        return NavigationUI.onNavDestinationSelected(item, navController) || super.onOptionsItemSelected(item);
+    }
 }
