@@ -1,5 +1,6 @@
 package com.example.barteringapp7;
 
+import static android.view.View.inflate;
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -19,8 +20,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -59,16 +63,16 @@ public class UploadActivity extends AppCompatActivity {
     private Button btnUpload;
     private Button btnVerify;
 
+    private int TotalPriceGrains;
+
     private ActivityResultLauncher<Void> cameraLauncher;
     private ActivityResultLauncher<String> galleryLauncher;
     private ActivityResultLauncher<String> permissionLauncher;
 
     List<Bitmap> listOfbitmaps;
-    EditText description,barterfor,price,title;
-
-
-
-
+    EditText description, barterfor, price, title;
+    TextView textViewPrice;
+    int WeightValue;
     LinearLayout modelSpinnerContainer;
 
     LinearLayout AttributeSpinnerContainer;
@@ -80,27 +84,36 @@ public class UploadActivity extends AppCompatActivity {
     String subcategoryName;
     Spinner modelSpinner;
     Spinner BrandSpinner;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
         setUpActivityResultLaunchers();
 
+        textViewPrice=findViewById(R.id.textViewPrice);
+        title = findViewById(R.id.txtTitle);
+        price = findViewById(R.id.txtPrice);
+        description = findViewById(R.id.txtDescription);
+        barterfor = findViewById(R.id.txtBarterFor);
+
+
         Intent intent = getIntent();
         listOfbitmaps = new ArrayList<>();
 
         if (intent != null && intent.hasExtra("subcategoryName") && intent.hasExtra("CategoryName")) {
-             subcategoryName = intent.getStringExtra("subcategoryName");
-             categoryName = intent.getStringExtra("CategoryName");
+            subcategoryName = intent.getStringExtra("subcategoryName");
+            categoryName = intent.getStringExtra("CategoryName");
             modelSpinnerContainer = findViewById(R.id.modelSpinnerContainer);
             AttributeSpinnerContainer = findViewById(R.id.AttributeSpinnerContainer);
             brandcontainer = findViewById(R.id.brandcontainer);
-            title = findViewById(R.id.txtTitle);
-            price = findViewById(R.id.txtPrice);
-            description = findViewById(R.id.txtDescription);
-            barterfor = findViewById(R.id.txtBarterFor);
+
             ImageButton infoIcon = findViewById(R.id.info_icon);
             ImageView imageView1 = findViewById(R.id.Imageview1);
+
+            if("Grains".equals(categoryName)){
+                textViewPrice.setText("Price/Kg");
+            }
 
             infoIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -143,40 +156,65 @@ public class UploadActivity extends AppCompatActivity {
             btnVerify.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (Integer.parseInt(price.getText().toString()) > 5000) {
-                        String jsonattributes = convertAttributesToJson();
-                        File[] files = convertBitmapListToFileArray(listOfbitmaps);
-                        selectedBrand = BrandSpinner != null ? (String) BrandSpinner.getSelectedItem() : "";
-                        selectedModel = modelSpinner != null ? (String) modelSpinner.getSelectedItem() : "";
-                        if (selectedBrand != null && selectedModel != null) {
-                            verfifyItemandUpload(email, title.getText().toString(), subcategoryName, categoryName, description.getText().toString(),
-                                    barterfor.getText().toString(), Integer.parseInt(price.getText().toString()), files,
-                                    selectedBrand, selectedModel, jsonattributes, callback);
-                        } else {
-                            Toast.makeText(UploadActivity.this, "Please select both brand and model", Toast.LENGTH_SHORT).show();
+                    String jsonattributes = convertAttributesToJson();
+                    if("Grains".equals(categoryName)){
+
+                        TotalPriceGrains=WeightValue*Integer.parseInt(price.getText().toString());
+                        Log.e("TotalPriceGrains",String.valueOf(TotalPriceGrains));
+
+                        if (TotalPriceGrains >= 5000) {
+                            File[] files = convertBitmapListToFileArray(listOfbitmaps);
+                            selectedBrand = BrandSpinner != null ? (String) BrandSpinner.getSelectedItem() : "";
+                            selectedModel = modelSpinner != null ? (String) modelSpinner.getSelectedItem() : "";
+                            if (selectedBrand != null && selectedModel != null) {
+                                verfifyItemandUpload(email, title.getText().toString(), subcategoryName, categoryName, description.getText().toString(),
+                                        barterfor.getText().toString(), Integer.parseInt(price.getText().toString()), files,
+                                        selectedBrand, selectedModel, jsonattributes, callback);
+                            } else {
+                                Toast.makeText(UploadActivity.this, "Please select both brand and model", Toast.LENGTH_SHORT).show();
+                            }
+                        }else{
+                            Toast.makeText(UploadActivity.this, "Total PRice is not greater than 5000", Toast.LENGTH_SHORT).show();
+
+                        }
+                    }else{
+                        if (Integer.parseInt(price.getText().toString()) >= 5000) {
+                            File[] files = convertBitmapListToFileArray(listOfbitmaps);
+                            selectedBrand = BrandSpinner != null ? (String) BrandSpinner.getSelectedItem() : "";
+                            selectedModel = modelSpinner != null ? (String) modelSpinner.getSelectedItem() : "";
+                            if (selectedBrand != null && selectedModel != null) {
+                                verfifyItemandUpload(email, title.getText().toString(), subcategoryName, categoryName, description.getText().toString(),
+                                        barterfor.getText().toString(), Integer.parseInt(price.getText().toString()), files,
+                                        selectedBrand, selectedModel, jsonattributes, callback);
+                            } else {
+                                Toast.makeText(UploadActivity.this, "Please select both brand and model", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
+
                 }
             });
 
             btnUpload.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String jsonattributes = convertAttributesToJson();
+                    String   jsonattributes = convertAttributesToJson();
                     File[] files = convertBitmapListToFileArray(listOfbitmaps);
+                    // Ensure BrandSpinner and modelSpinner are not null before accessing their selected items
                     selectedBrand = BrandSpinner != null ? (String) BrandSpinner.getSelectedItem() : "";
                     selectedModel = modelSpinner != null ? (String) modelSpinner.getSelectedItem() : "";
+
                     if (selectedBrand != null && selectedModel != null) {
                         uploadItem(email, title.getText().toString(), subcategoryName, categoryName, description.getText().toString(),
                                 barterfor.getText().toString(), Integer.parseInt(price.getText().toString()), files,
                                 selectedBrand, selectedModel, jsonattributes);
                         gotoRecommendation();
-
                     } else {
                         Toast.makeText(UploadActivity.this, "Please select both brand and model", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
+
 
             ImageButton backButton = findViewById(R.id.back_button);
             backButton.setOnClickListener(new View.OnClickListener() {
@@ -231,6 +269,7 @@ public class UploadActivity extends AppCompatActivity {
     private void dispatchGalleryIntent() {
         galleryLauncher.launch("image/*");
     }
+
     private void setImageBitmaps(List<Bitmap> bitmaps) {
         int numImageViews = imageViews.size();
         int numImages = bitmaps.size();
@@ -310,36 +349,38 @@ public class UploadActivity extends AppCompatActivity {
     public void fetchbrand(String subcategory) {
         APIService apiService = RetrofitClient.getRetrofitInstance().create(APIService.class);
         Call<List<String>> call = apiService.getSubCategoriesBrand(subcategory);
-
+        Log.e("Subcategory",subcategory);
         call.enqueue(new Callback<List<String>>() {
             @Override
             public void onResponse(Call<List<String>> call, Response<List<String>> response) {
                 if (response.isSuccessful()) {
                     List<String> subcategoriesbrands = response.body();
-                    for(String s: subcategoriesbrands){
+                    for (String s : subcategoriesbrands) {
                         Log.e("brand check", s);
                         Log.e("brand check", subcategory);
 
                     }
-                    if(subcategoriesbrands!=null){
-                        populatebrand(subcategoriesbrands,subcategory);
+                    if (subcategoriesbrands != null) {
+                        populatebrand(subcategoriesbrands, subcategory);
                     }
 
 
-                }else{
+                } else {
                     Log.e("brand check", "unsucessfull message");
                 }
             }
 
             @Override
             public void onFailure(Call<List<String>> call, Throwable t) {
+                Log.e("API check", "On Failure - fetchBrands function");
 
             }
         });
 
     }
+
     public void populatebrand(List<String> brands, String subcategory) {
-        if(brands!=null){
+        if (brands != null) {
             if ("Smartphones".equals(subcategory) || "Laptops".equals(subcategory)) {
                 // Create a new Spinner instance for brands
                 BrandSpinner = new Spinner(this);
@@ -381,7 +422,7 @@ public class UploadActivity extends AppCompatActivity {
 
     }
 
-    public void getModelsbyBrand(String brand,String subcategory){
+    public void getModelsbyBrand(String brand, String subcategory) {
         APIService apiService = RetrofitClient.getRetrofitInstance().create(APIService.class);
         Call<List<String>> call = apiService.getModelsByBrand(brand);
 
@@ -391,8 +432,8 @@ public class UploadActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     List<String> Models = response.body();
 
-                        createModelSpinner(Models,subcategory);
-                }else{
+                    createModelSpinner(Models, subcategory);
+                } else {
 
                 }
             }
@@ -444,19 +485,19 @@ public class UploadActivity extends AppCompatActivity {
 //
 //    }
 
-    public void getsubcategoryattributes(String subcategory){
+    public void getsubcategoryattributes(String subcategory) {
         APIService apiService = RetrofitClient.getRetrofitInstance().create(APIService.class);
         Call<List<String>> call = apiService.getsubcategoryattributes(subcategory);
 
         call.enqueue(new Callback<List<String>>() {
             @Override
             public void onResponse(Call<List<String>> call, Response<List<String>> response) {
-                if(response.isSuccessful()){
-                    List<String> attributes=response.body();
+                if (response.isSuccessful()) {
+                    List<String> attributes = response.body();
 
-                    setsubcategoryattributes(attributes,subcategory);
+                    setsubcategoryattributes(attributes, subcategory);
 
-                }else{
+                } else {
 
                 }
             }
@@ -469,9 +510,9 @@ public class UploadActivity extends AppCompatActivity {
 
     }
 
-    public void setsubcategoryattributes(List<String> attributes,String subcat) {
+    public void setsubcategoryattributes(List<String> attributes, String subcat) {
 
-        if(categoryName.equals("Electronic Devices")) {
+        if (categoryName.equals("Electronic Devices")) {
             AttributeSpinnerContainer.removeAllViews();
             for (String attribute : attributes) {
                 // Inflate the layout for each attribute
@@ -518,17 +559,20 @@ public class UploadActivity extends AppCompatActivity {
                 // Add the inflated layout to the AttributeSpinnerContainer
                 AttributeSpinnerContainer.addView(attributeLayout);
             }
-        }else{
-            Log.e("CategoryNAme",categoryName);
-            setOtherCategoryAttributes(attributes,subcat);
-            }
+        } else if ("Grains".equals(categoryName)) {
+            setGrainsAttributes(attributes);
+        } else {
+            Log.e("CategoryNAme", categoryName);
+
+
+            setOtherCategoryAttributes(attributes, subcat);
         }
 
+    }
 
 
-
-    public void uploadItem(String email, String itemName, String subcategory,String category, String description,
-                           String barterFor, int price, File[] images,String brand,String model, String attributesJson) {
+    public void uploadItem(String email, String itemName, String subcategory, String category, String description,
+                           String barterFor, int price, File[] images, String brand, String model, String attributesJson) {
 
 
         // Create Retrofit instance
@@ -554,14 +598,14 @@ public class UploadActivity extends AppCompatActivity {
                 imageParts[i] = MultipartBody.Part.createFormData("Image_0" + (i + 1), images[i].getName(), imageBody);
             }
         }
-Log.e("Json string",attributesJson);
-        Log.e("Model string",selectedModel);
-        Log.e("Brand string",selectedBrand);
-        Log.e("category string",category);
+        Log.e("Json string", attributesJson);
+        Log.e("Model string", selectedModel);
+        Log.e("Brand string", selectedBrand);
+        Log.e("category string", category);
 
         // Make the upload request
-        Call<Integer> call = apiService[0].uploadItem2(emailBody, itemNameBody, subcategoryBody,categoryBody,
-                descriptionBody, barterForBody, priceBody, attributesJsonBody, imageParts,brand1,model1);
+        Call<Integer> call = apiService[0].uploadItem2(emailBody, itemNameBody, subcategoryBody, categoryBody,
+                descriptionBody, barterForBody, priceBody, attributesJsonBody, imageParts, brand1, model1);
         call.enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
@@ -582,7 +626,7 @@ Log.e("Json string",attributesJson);
     }
 
 
-    public void sendVerificationRequest(String itemid){
+    public void sendVerificationRequest(String itemid) {
         final APIService apiService = RetrofitClient.getRetrofitInstance().create(APIService.class);
 
         Call<Void> call = apiService.sendVerificationRequest(itemid);
@@ -592,7 +636,7 @@ Log.e("Json string",attributesJson);
                 if (response.isSuccessful()) {
                     // Handle successful response
                     Log.d(TAG, "Verification request sent successfully.");
-                    Intent intent=new Intent(UploadActivity.this, ItemUploadedActivity.class);
+                    Intent intent = new Intent(UploadActivity.this, ItemUploadedActivity.class);
                     startActivity(intent);
                 } else {
                     // Handle unsuccessful response
@@ -608,16 +652,13 @@ Log.e("Json string",attributesJson);
         });
 
 
-
-
-
     }
-
 
 
     public interface ItemUploadCallback {
         void onItemUploaded(int itemId);
     }
+
     public void verfifyItemandUpload(String email, String itemName, String subcategory, String category, String description,
                                      String barterFor, int price, File[] images, String brand, String model, String attributesJson,
                                      UploadActivity.ItemUploadCallback callback) {
@@ -669,8 +710,6 @@ Log.e("Json string",attributesJson);
     }
 
 
-
-
     private File[] convertBitmapListToFileArray(List<Bitmap> bitmaps) {
         File[] files = new File[bitmaps.size()];
 
@@ -702,6 +741,7 @@ Log.e("Json string",attributesJson);
         return file;
     }
 
+
     @NonNull
     private String convertAttributesToJson() {
         JSONObject attributesJson = new JSONObject();
@@ -713,24 +753,50 @@ Log.e("Json string",attributesJson);
             // Find TextView and Spinner in the attribute layout
             TextView attributeTextView = attributeLayout.findViewById(R.id.textViewAttributeName);
             Spinner attributeValueSpinner = attributeLayout.findViewById(R.id.spinnerAttributeValue);
+            EditText attributeValueEditText = attributeLayout.findViewById(R.id.editTextAttributeValue);
 
-            // Get attribute name and value
+            // Get attribute name
             String attributeName = attributeTextView.getText().toString();
-            String attributeValue = attributeValueSpinner.getSelectedItem().toString();
 
-            try {
-                // Add attribute name and value to JSON object
-                attributesJson.put(attributeName, attributeValue);
-                String firstValue = getFirstAttributeValue(attributesJson);
-                getElectronicsAverage(firstValue);
-            } catch (JSONException e) {
-                e.printStackTrace();
+            // Check if the view is a Spinner
+            if (attributeValueSpinner != null && attributeValueSpinner.getSelectedItem() != null) {
+                String attributeValue = (String) attributeValueSpinner.getSelectedItem();
+                try {
+                    // Add attribute name and value to JSON object
+                    attributesJson.put(attributeName, attributeValue);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } else if (attributeValueEditText != null) {
+                // If the view is an EditText, get its value explicitly
+                String attributeValue = attributeValueEditText.getText().toString().trim(); // trim to remove leading/trailing spaces
+
+                if (!attributeValue.isEmpty()) {
+                    try {
+                        // Add attribute name and value to JSON object
+                        attributesJson.put(attributeName, attributeValue);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
             }
+        }
+
+        Log.e("Json atributes",attributesJson.toString());
+        try {
+           String Weight= (String) attributesJson.get("Weight (KG)");
+           Log.e("Weight value",Weight);
+           WeightValue=Integer.parseInt(Weight);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
         }
 
         // Convert JSON object to string and return
         return attributesJson.toString();
     }
+
+
     public void createModelSpinner(List<String> models, String subcategory) {
         modelSpinnerContainer.removeAllViews();
 
@@ -756,7 +822,7 @@ Log.e("Json string",attributesJson);
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedModel = (String) parent.getItemAtPosition(position);
-                    getElectronicsAverage(selectedModel);
+                getElectronicsAverage(selectedModel);
 
 
             }
@@ -772,7 +838,6 @@ Log.e("Json string",attributesJson);
     }
 
 
-
     public void getElectronicsAverage(String model) {
         APIService apiService = RetrofitClient.getRetrofitInstance().create(APIService.class);
 
@@ -785,11 +850,15 @@ Log.e("Json string",attributesJson);
                     Log.e("Average", model + String.valueOf(electronicsAverage));
                     Log.e("Average", categoryName);
 
-
-
+                    if(categoryName.equals("Grains")){
+                        TextView recommendedPrice = findViewById(R.id.txtRecommendedPrice);
+                        recommendedPrice.setText("Recommended Price: " + electronicsAverage+"/Kg");
+                    }else{
+                        TextView recommendedPrice = findViewById(R.id.txtRecommendedPrice);
+                        recommendedPrice.setText("Recommended Price: " + electronicsAverage);
+                    }
                     // Update UI with the average value
-                    TextView recommendedPrice = findViewById(R.id.txtRecommendedPrice);
-                    recommendedPrice.setText("Recommended Price: " + electronicsAverage);
+
                 }
             }
 
@@ -800,10 +869,11 @@ Log.e("Json string",attributesJson);
         });
     }
 
-    public void gotoRecommendation(){
-      Intent i=new Intent(UploadActivity.this,RecommendedPosts.class);
-      startActivity(i);
+    public void gotoRecommendation() {
+        Intent i = new Intent(UploadActivity.this, RecommendedPosts.class);
+        startActivity(i);
     }
+
     @NonNull
     private String getFirstAttributeValue(JSONObject attributesJson) {
         String firstAttributeValue = null;
@@ -822,6 +892,7 @@ Log.e("Json string",attributesJson);
 
         return firstAttributeValue;
     }
+
     public void setOtherCategoryAttributes(List<String> attributes, String subcat) {
         AttributeSpinnerContainer.removeAllViews();
 
@@ -879,14 +950,93 @@ Log.e("Json string",attributesJson);
             AttributeSpinnerContainer.addView(attributeLayout);
 
         }// Add the attribute layout to the container
-        }
+    }
 
 
-            private void updateRecommendedPrice(String selectedValue) {
+    private void updateRecommendedPrice(String selectedValue) {
         // Here you can update the recommended price based on the selected value from the first spinner
         getElectronicsAverage(selectedValue);
     }
 
 
+    private void setGrainsAttributes(List<String> attributes) {
+        AttributeSpinnerContainer.removeAllViews();
+
+
+        for (int i = 0; i < attributes.size(); i++) {
+            String attribute = attributes.get(i);
+
+            // Create a final copy of the index for use within the inner class
+            final int spinnerIndex = i;
+
+            // Inflate the layout for each attribute
+            View attributeLayout = getLayoutInflater().inflate(R.layout.spinner_layout, null);
+            TextView attributeTextView = attributeLayout.findViewById(R.id.textViewAttributeName);
+            Spinner attributeValueSpinner = attributeLayout.findViewById(R.id.spinnerAttributeValue);
+            attributeTextView.setText(attribute);
+
+            // Make API call to get values for each attribute
+            APIService apiService = RetrofitClient.getRetrofitInstance().create(APIService.class);
+            Call<List<String>> attributeValuesCall = apiService.getttributevalues(subcategoryName, attribute);
+            attributeValuesCall.enqueue(new Callback<List<String>>() {
+                @Override
+                public void onResponse(Call<List<String>> call, Response<List<String>> response) {
+                    if (response.isSuccessful()) {
+                        List<String> values = response.body();
+                        if (values != null) {
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(UploadActivity.this, android.R.layout.simple_spinner_item, values);
+                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            attributeValueSpinner.setAdapter(adapter);
+
+                            // Check if the current spinner is the first spinner
+                            if (spinnerIndex == 0) {
+                                // Set listener only for the first spinner
+                                attributeValueSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                    @Override
+                                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                        String selectedValue = (String) parent.getItemAtPosition(position);
+                                        updateRecommendedPrice(selectedValue);
+                                    }
+
+                                    @Override
+                                    public void onNothingSelected(AdapterView<?> parent) {
+                                        // Handle when nothing is selected
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<String>> call, Throwable t) {
+                    Log.e("API Call", "Failed: " + t.getMessage());
+                }
+            });
+            AttributeSpinnerContainer.addView(attributeLayout);
+
+        }
+
+        View weightLayout = getLayoutInflater().inflate(R.layout.text_input_layout, null);
+        TextView weightTextView = weightLayout.findViewById(R.id.textViewAttributeName);
+        EditText weightEditText = weightLayout.findViewById(R.id.editTextAttributeValue);
+        weightTextView.setText("Weight (KG)");
+
+        // Add the views to the container
+        AttributeSpinnerContainer.addView(weightLayout);
+
+
+
+        // Add any additional attributes from the list
+
+
+    }
+
+
+
+
+
 
 }
+
+

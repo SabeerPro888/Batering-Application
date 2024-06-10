@@ -153,8 +153,24 @@ public class Items implements Serializable {
     int Price;
 
     String isSold;
+    String Category;
+    String subCategory;
 
+    public String getCategory() {
+        return Category;
+    }
 
+    public void setCategory(String category) {
+        Category = category;
+    }
+
+    public String getSubCategory() {
+        return subCategory;
+    }
+
+    public void setSubCategory(String subCategory) {
+        this.subCategory = subCategory;
+    }
 
     private int User_id;
 

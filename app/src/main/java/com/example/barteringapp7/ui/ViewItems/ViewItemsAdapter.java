@@ -60,12 +60,17 @@ public class ViewItemsAdapter extends RecyclerView.Adapter<ViewItemsViewHolder> 
         holder.User.setText(currentItem.getUser_name());
         holder.BarterFor.setText( currentItem.getBarter_for());
         String price = String.valueOf(currentItem.getPrice());
-        holder.Price.setText(price);
+        holder.Price.setText(price + "PKR");
         Double ratingDouble = currentItem.getRating(); // Assuming this returns a Double
         float ratingFloat = ratingDouble != null ? ratingDouble.floatValue() : 0.0f; // Convert to float, with a default value if null
         Log.e("Rating value",""+ratingDouble+"");
         holder.ratingBar.setRating(ratingFloat); // Set the rating to the RatingBar
         String verificationStatus=currentItem.getVerification_status();
+        if(currentItem.getCategory().equals("Grains")){
+
+        holder.PriceTextView.setText("Price/Kg ");
+        }
+
 
 
 

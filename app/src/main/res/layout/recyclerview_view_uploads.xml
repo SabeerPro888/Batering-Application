@@ -127,13 +127,14 @@
                 android:id="@+id/txtisSold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="44dp"
-                android:layout_marginEnd="104dp"
-                android:text="Sold"
-                android:textSize="100dp"
+                android:layout_marginTop="28dp"
+                android:layout_marginEnd="8dp"
+                android:text="Bartered"
                 android:textColor="@color/Gray"
+                android:textSize="90dp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="@+id/imageViewItem"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/imageViewItem" />
 
 

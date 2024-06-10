@@ -23,6 +23,8 @@ public class ViewItemsViewHolder extends RecyclerView.ViewHolder {
     ImageView profile;
     RatingBar ratingBar;
 
+    TextView PriceTextView;
+
     ImageView verificationTickImageView;
 
     public ViewItemsViewHolder(@NonNull View itemView) {
@@ -35,6 +37,7 @@ public class ViewItemsViewHolder extends RecyclerView.ViewHolder {
         this.verificationTickImageView=(ImageView)itemView.findViewById(R.id.verificationTickImageView);
         this.profile=(ImageView)itemView.findViewById(R.id.imageView7);
         this.ratingBar=(RatingBar) itemView.findViewById(R.id.ratingBar);
+        this.PriceTextView=(TextView)itemView.findViewById(R.id.textView4);
 
 
     }

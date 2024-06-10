@@ -74,6 +74,8 @@ public class ItemDetailsActivity extends AppCompatActivity {
 
     ImageView Profile;
 
+    TextView txtViewItemValue;
+
     Items item;
 
     @Override
@@ -81,7 +83,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_details);
          item = (Items) getIntent().getSerializableExtra("item_details");
-
+        txtViewItemValue=findViewById(R.id.txtViewItemValue);
         attributesContainer = findViewById(R.id.attributesContainer);
         txtVerification = findViewById(R.id.txtVerificationStatus);
 //        img1=findViewById(R.id.imageView1);
@@ -336,13 +338,17 @@ private void displayItemDetails(Items item) {
                 tvBarterWith.setText("Barter With: " + itemDetails.getBarter_for());
                 tvDescription.setText(itemDetails.getDescription());
                 tvTitle.setText( itemDetails.getItem_name());
-                tvValue.setText(String.valueOf(itemDetails.getPrice()));
+                tvValue.setText(String.valueOf(itemDetails.getPrice()+" Pkr"));
                 txtVerification.setText("Verification Status: " + itemDetails.getVerification_status());
                 tvRating.setText(String.valueOf(itemDetails.getRating()));
                 // Remove existing attributes views if any
                 attributesContainer.removeAllViews();
                  Profile=findViewById(R.id.imageView7);
 
+                if(item.getCategory().equals("Grains")){
+                    txtViewItemValue.setText("Price/Kg: ");
+
+                }
                 if(itemDetails.getProfilePic()!=null){
                     String ProfilePic = RetrofitClient.BASE_URL + "BarteringAppAPI/Content/Images/" + itemDetails.getProfilePic();
                     Picasso.get().load(ProfilePic).into(Profile);

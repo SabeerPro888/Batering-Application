@@ -102,7 +102,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewholder> {
 
             }
         });
-
+        holder.btnRequestSenderComfirmation.setVisibility(View.GONE);
+        holder.btnRequestReceiverConfirmation.setVisibility(View.GONE);
         holder.btnRequestSenderComfirmation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
