@@ -3,12 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.camera" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
-
 
     <application
         android:name=".MyApplication"
@@ -23,8 +23,41 @@
         android:theme="@style/Theme.Barteringapp7"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-
-
+        <activity
+            android:name=".ItemDetailsBarterAttributesSelection"
+            android:exported="false" />
+        <activity
+            android:name=".ActivityItemDetailsBarterForSubCategory"
+            android:exported="false" />
+        <activity
+            android:name=".ActivityItemdetailsBarterForCategory"
+            android:exported="false" />
+        <activity
+            android:name=".BarterForItemDetailsCategory.ActivityItemdetailsBarterForCategory"
+            android:exported="false"
+            android:label="@string/title_activity_itemdetails_barter_for_category"
+            android:theme="@style/Theme.Barteringapp7" />
+        <activity
+            android:name=".ui.RecommendedItems.RecommendedItemsFragment"
+            android:exported="false" />
+        <activity
+            android:name=".AdvanceSearchResult.AdvanceSearchResult"
+            android:exported="false" />
+        <activity
+            android:name=".AdvancedSearchActivity"
+            android:exported="false" />
+        <activity
+            android:name=".BarterForAttributes.ActivityBarterForAttributes"
+            android:exported="false" />
+        <activity
+            android:name=".BarterForSubCategory.ActivityBarterForSubCategory"
+            android:exported="false" />
+        <activity
+            android:name=".BarterForCategory.ActivityBarterForCategory"
+            android:exported="false" />
+        <activity
+            android:name=".ActivityBarterItemsCategorySeletion"
+            android:exported="false" />
         <activity
             android:name=".Activity_SignUp"
             android:exported="false" />

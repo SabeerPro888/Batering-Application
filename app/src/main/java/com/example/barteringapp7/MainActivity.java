@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
                             } else if (responseData.equals("User")) {
 
                                 GlobalVariables.getInstance().setEmail(E);
+                                Log.e("Email",GlobalVariables.getInstance().getEmail().toString());
 
                                 Intent intent = new Intent(MainActivity.this, NavigationActivity.class);
 

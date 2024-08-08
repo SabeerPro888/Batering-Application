@@ -1,6 +1,7 @@
 package com.example.barteringapp7.ui.UploadItems2;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,26 +61,39 @@ public class UploadItems2Fragment extends Fragment {
             @Override
             public void onResponse(Call<List<Category>> call, Response<List<Category>> response) {
                 List<Category> categories = response.body();
-                if (categories != null) {
-                    recyclerView = binding.categoriesRecyclerView;
+                if(response.isSuccessful()){
+                    if (categories != null) {
+                        recyclerView = binding.categoriesRecyclerView;
 
-                    GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
+                        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
 
-                    // Set the layout manager to the RecyclerView
-                    recyclerView.setLayoutManager(layoutManager);
+                        // Set the layout manager to the RecyclerView
+                        recyclerView.setLayoutManager(layoutManager);
 
 
-                    ArrayList<Category> categoryArrayList = new ArrayList<>(categories);
+                        ArrayList<Category> categoryArrayList = new ArrayList<>(categories);
 
-                    UploadItem2Adapter objAdapter = new UploadItem2Adapter(getContext(), categoryArrayList);
-                    recyclerView.setAdapter(objAdapter);
+                        for(Category s:categories){
+                            Log.e("Category",s.getCategory_name());
+                        }
+                        Log.e("On Response categories","sucessfull ");
+
+
+                        UploadItem2Adapter objAdapter = new UploadItem2Adapter(getContext(), categoryArrayList);
+                        recyclerView.setAdapter(objAdapter);
                 }
+
+                }else{
+                    Log.e("On Response categories","No sucessfull ");
+
+                }
+
 
             }
 
             @Override
             public void onFailure(Call<List<Category>> call, Throwable t) {
-
+            Log.e("On Failure Category",t.toString());
             }
         });
 

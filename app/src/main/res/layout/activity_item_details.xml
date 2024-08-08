@@ -233,6 +233,14 @@
         android:text="Barter With : "
         android:id="@+id/txtBarterWith"/>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edit Wishlist"
+        android:id="@+id/btnEditWishList"
+        android:layout_gravity="center"
+        />
+
 
 
     <LinearLayout

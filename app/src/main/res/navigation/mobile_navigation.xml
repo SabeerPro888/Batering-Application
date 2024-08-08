@@ -41,6 +41,14 @@
         android:label="Notifications"
         tools:layout="@layout/fragment_notifications" />
 
+    <fragment
+        android:id="@+id/nav_RecommendedItems"
+        android:name="com.example.barteringapp7.ui.RecommendedItems.RecommendedItemsFragment"
+        android:label="Recommended Items"
+        tools:layout="@layout/fragment_recommended_items" />
+
+
+
 
     <fragment
         android:id="@+id/nav_history"

@@ -38,7 +38,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.barteringapp7.BarterForCategory.ActivityBarterForCategory;
 import com.example.barteringapp7.ui.UploadItems.UploadItemsFragment;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -62,6 +65,8 @@ public class UploadActivity extends AppCompatActivity {
     private List<ImageView> imageViews;
     private Button btnUpload;
     private Button btnVerify;
+
+    private ImageButton btnAddBarterFor;
 
     private int TotalPriceGrains;
 
@@ -95,21 +100,37 @@ public class UploadActivity extends AppCompatActivity {
         title = findViewById(R.id.txtTitle);
         price = findViewById(R.id.txtPrice);
         description = findViewById(R.id.txtDescription);
-        barterfor = findViewById(R.id.txtBarterFor);
+
+        Set<String> selectedItems = SelectedItemsManager.getInstance().getSelectedItems();
+        List<String> BarterForItems = new ArrayList<>(selectedItems);
+
+        for(String s:BarterForItems){
+            Log.e("Selected Items",s);
+        }
 
 
         Intent intent = getIntent();
         listOfbitmaps = new ArrayList<>();
 
-        if (intent != null && intent.hasExtra("subcategoryName") && intent.hasExtra("CategoryName")) {
-            subcategoryName = intent.getStringExtra("subcategoryName");
-            categoryName = intent.getStringExtra("CategoryName");
+
+            subcategoryName = GlobalVariables.getInstance().getSubCategory();
+            categoryName = GlobalVariables.getInstance().getCategory();
             modelSpinnerContainer = findViewById(R.id.modelSpinnerContainer);
             AttributeSpinnerContainer = findViewById(R.id.AttributeSpinnerContainer);
             brandcontainer = findViewById(R.id.brandcontainer);
 
             ImageButton infoIcon = findViewById(R.id.info_icon);
             ImageView imageView1 = findViewById(R.id.Imageview1);
+            btnAddBarterFor=findViewById(R.id.btnAddBarterFor);
+
+            btnAddBarterFor.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent=new Intent(UploadActivity.this, ActivityBarterForCategory.class);
+                    startActivity(intent);
+                }
+            });
+
 
             if("Grains".equals(categoryName)){
                 textViewPrice.setText("Price/Kg");
@@ -156,11 +177,14 @@ public class UploadActivity extends AppCompatActivity {
             btnVerify.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String jsonattributes = convertAttributesToJson();
-                    if("Grains".equals(categoryName)){
+                    if(validateInput()){
 
-                        TotalPriceGrains=WeightValue*Integer.parseInt(price.getText().toString());
-                        Log.e("TotalPriceGrains",String.valueOf(TotalPriceGrains));
+
+                    String jsonattributes = convertAttributesToJson();
+                    if ("Grains".equals(categoryName)) {
+
+                        TotalPriceGrains = WeightValue * Integer.parseInt(price.getText().toString());
+                        Log.e("TotalPriceGrains", String.valueOf(TotalPriceGrains));
 
                         if (TotalPriceGrains >= 5000) {
                             File[] files = convertBitmapListToFileArray(listOfbitmaps);
@@ -168,28 +192,33 @@ public class UploadActivity extends AppCompatActivity {
                             selectedModel = modelSpinner != null ? (String) modelSpinner.getSelectedItem() : "";
                             if (selectedBrand != null && selectedModel != null) {
                                 verfifyItemandUpload(email, title.getText().toString(), subcategoryName, categoryName, description.getText().toString(),
-                                        barterfor.getText().toString(), Integer.parseInt(price.getText().toString()), files,
-                                        selectedBrand, selectedModel, jsonattributes, callback);
+                                        Integer.parseInt(price.getText().toString()), files,
+                                        selectedBrand, selectedModel, jsonattributes, callback, BarterForItems);
                             } else {
                                 Toast.makeText(UploadActivity.this, "Please select both brand and model", Toast.LENGTH_SHORT).show();
                             }
-                        }else{
+                        } else {
                             Toast.makeText(UploadActivity.this, "Total PRice is not greater than 5000", Toast.LENGTH_SHORT).show();
 
                         }
-                    }else{
+                    } else {
                         if (Integer.parseInt(price.getText().toString()) >= 5000) {
                             File[] files = convertBitmapListToFileArray(listOfbitmaps);
                             selectedBrand = BrandSpinner != null ? (String) BrandSpinner.getSelectedItem() : "";
                             selectedModel = modelSpinner != null ? (String) modelSpinner.getSelectedItem() : "";
                             if (selectedBrand != null && selectedModel != null) {
                                 verfifyItemandUpload(email, title.getText().toString(), subcategoryName, categoryName, description.getText().toString(),
-                                        barterfor.getText().toString(), Integer.parseInt(price.getText().toString()), files,
-                                        selectedBrand, selectedModel, jsonattributes, callback);
+                                        Integer.parseInt(price.getText().toString()), files,
+                                        selectedBrand, selectedModel, jsonattributes, callback, BarterForItems);
                             } else {
                                 Toast.makeText(UploadActivity.this, "Please select both brand and model", Toast.LENGTH_SHORT).show();
                             }
                         }
+                    }
+                }
+                    else{
+                        Toast.makeText(UploadActivity.this, "Please fill out all required fields correctly", Toast.LENGTH_SHORT).show();
+
                     }
 
                 }
@@ -198,25 +227,37 @@ public class UploadActivity extends AppCompatActivity {
             btnUpload.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String   jsonattributes = convertAttributesToJson();
-                    File[] files = convertBitmapListToFileArray(listOfbitmaps);
-                    // Ensure BrandSpinner and modelSpinner are not null before accessing their selected items
-                    selectedBrand = BrandSpinner != null ? (String) BrandSpinner.getSelectedItem() : "";
-                    selectedModel = modelSpinner != null ? (String) modelSpinner.getSelectedItem() : "";
 
-                    if (selectedBrand != null && selectedModel != null) {
-                        uploadItem(email, title.getText().toString(), subcategoryName, categoryName, description.getText().toString(),
-                                barterfor.getText().toString(), Integer.parseInt(price.getText().toString()), files,
-                                selectedBrand, selectedModel, jsonattributes);
-                        gotoRecommendation();
-                    } else {
-                        Toast.makeText(UploadActivity.this, "Please select both brand and model", Toast.LENGTH_SHORT).show();
+                    if (validateInput()) {
+
+                        String   jsonattributes = convertAttributesToJson();
+                        File[] files = convertBitmapListToFileArray(listOfbitmaps);
+                        // Ensure BrandSpinner and modelSpinner are not null before accessing their selected items
+                        selectedBrand = BrandSpinner != null ? (String) BrandSpinner.getSelectedItem() : "";
+                        selectedModel = modelSpinner != null ? (String) modelSpinner.getSelectedItem() : "";
+
+                        if (selectedBrand != null && selectedModel != null) {
+                            uploadItem(email, title.getText().toString(), subcategoryName, categoryName, description.getText().toString(),
+                                    Integer.parseInt(price.getText().toString()), files,
+                                    selectedBrand, selectedModel, jsonattributes,BarterForItems);
+                            gotoRecommendation();
+                        } else {
+                            Toast.makeText(UploadActivity.this, "Please select both brand and model", Toast.LENGTH_SHORT).show();
+                        }
+
+            }else{
+                        Toast.makeText(UploadActivity.this, "Please fill out all required fields correctly", Toast.LENGTH_SHORT).show();
+
                     }
-                }
+
+
+        }
             });
 
 
-            ImageButton backButton = findViewById(R.id.back_button);
+
+
+        ImageButton backButton = findViewById(R.id.back_button);
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -224,10 +265,49 @@ public class UploadActivity extends AppCompatActivity {
                 }
             });
 
-        }
+
         TextView toolbarTitle = findViewById(R.id.toolbar_title);
         toolbarTitle.setText("Upload Item");
     }
+
+    private boolean validateInput() {
+        boolean isValid = true;
+
+        // Validate title (mandatory)
+        String titleStr = title.getText().toString().trim();
+        if (titleStr.isEmpty()) {
+            title.setError("Title is required");
+            isValid = false;
+        } else {
+            title.setError(null); // Clear error
+        }
+
+        // Validate price (mandatory and integer)
+        String priceStr = price.getText().toString().trim();
+        if (priceStr.isEmpty()) {
+            price.setError("Price is required");
+            isValid = false;
+        } else {
+            try {
+                int priceValue = Integer.parseInt(priceStr);
+                if (priceValue <= 0) {
+                    price.setError("Price must be greater than 0");
+                    isValid = false;
+                } else {
+                    price.setError(null); // Clear error
+                }
+            } catch (NumberFormatException e) {
+                price.setError("Invalid price format");
+                isValid = false;
+            }
+        }
+
+        // Optionally validate description (optional)
+        // No need to validate here if it's optional and you have no specific checks.
+
+        return isValid;
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -572,7 +652,7 @@ public class UploadActivity extends AppCompatActivity {
 
 
     public void uploadItem(String email, String itemName, String subcategory, String category, String description,
-                           String barterFor, int price, File[] images, String brand, String model, String attributesJson) {
+                           int price, File[] images, String brand, String model, String attributesJson,List<String> BarterForItems) {
 
 
         // Create Retrofit instance
@@ -585,11 +665,12 @@ public class UploadActivity extends AppCompatActivity {
         RequestBody categoryBody = RequestBody.create(MediaType.parse("text/plain"), category);
 
         RequestBody descriptionBody = RequestBody.create(MediaType.parse("text/plain"), description);
-        RequestBody barterForBody = RequestBody.create(MediaType.parse("text/plain"), barterFor);
+//        RequestBody barterForBody = RequestBody.create(MediaType.parse("text/plain"), barterFor);
         RequestBody priceBody = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(price));
         RequestBody attributesJsonBody = RequestBody.create(MediaType.parse("text/plain"), attributesJson);
         RequestBody model1 = RequestBody.create(MediaType.parse("text/plain"), model);
         RequestBody brand1 = RequestBody.create(MediaType.parse("text/plain"), brand);
+
 
         MultipartBody.Part[] imageParts = new MultipartBody.Part[5];
         for (int i = 0; i < images.length; i++) {
@@ -603,9 +684,14 @@ public class UploadActivity extends AppCompatActivity {
         Log.e("Brand string", selectedBrand);
         Log.e("category string", category);
 
+
+        String json = new Gson().toJson(BarterForItems);
+        RequestBody barterForItemsJsonBody = RequestBody.create(MediaType.parse("application/json"), json);
+
+
         // Make the upload request
         Call<Integer> call = apiService[0].uploadItem2(emailBody, itemNameBody, subcategoryBody, categoryBody,
-                descriptionBody, barterForBody, priceBody, attributesJsonBody, imageParts, brand1, model1);
+                descriptionBody,  priceBody, attributesJsonBody, imageParts, brand1, model1,barterForItemsJsonBody);
         call.enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
@@ -660,8 +746,8 @@ public class UploadActivity extends AppCompatActivity {
     }
 
     public void verfifyItemandUpload(String email, String itemName, String subcategory, String category, String description,
-                                     String barterFor, int price, File[] images, String brand, String model, String attributesJson,
-                                     UploadActivity.ItemUploadCallback callback) {
+                                     int price, File[] images, String brand, String model, String attributesJson,
+                                     UploadActivity.ItemUploadCallback callback,List<String> barterForItems) {
 
         // Create Retrofit instance
         final APIService[] apiService = {RetrofitClient.getRetrofitInstance().create(APIService.class)};
@@ -672,11 +758,13 @@ public class UploadActivity extends AppCompatActivity {
         RequestBody subcategoryBody = RequestBody.create(MediaType.parse("text/plain"), subcategory);
         RequestBody categoryBody = RequestBody.create(MediaType.parse("text/plain"), category);
         RequestBody descriptionBody = RequestBody.create(MediaType.parse("text/plain"), description);
-        RequestBody barterForBody = RequestBody.create(MediaType.parse("text/plain"), barterFor);
+//        RequestBody barterForBody = RequestBody.create(MediaType.parse("text/plain"), barterFor);
         RequestBody priceBody = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(price));
         RequestBody attributesJsonBody = RequestBody.create(MediaType.parse("text/plain"), attributesJson);
         RequestBody model1 = RequestBody.create(MediaType.parse("text/plain"), model);
         RequestBody brand1 = RequestBody.create(MediaType.parse("text/plain"), brand);
+
+
 
         MultipartBody.Part[] imageParts = new MultipartBody.Part[5];
         for (int i = 0; i < images.length; i++) {
@@ -685,10 +773,13 @@ public class UploadActivity extends AppCompatActivity {
                 imageParts[i] = MultipartBody.Part.createFormData("Image_0" + (i + 1), images[i].getName(), imageBody);
             }
         }
+        String json = new Gson().toJson(barterForItems);
+        RequestBody barterForItemsJsonBody = RequestBody.create(MediaType.parse("application/json"), json);
+
 
         // Make the upload request
         Call<Integer> call = apiService[0].uploadItem2(emailBody, itemNameBody, subcategoryBody, categoryBody,
-                descriptionBody, barterForBody, priceBody, attributesJsonBody, imageParts, brand1, model1);
+                descriptionBody, priceBody, attributesJsonBody, imageParts, brand1, model1,barterForItemsJsonBody);
         call.enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
@@ -784,13 +875,16 @@ public class UploadActivity extends AppCompatActivity {
         }
 
         Log.e("Json atributes",attributesJson.toString());
-        try {
-           String Weight= (String) attributesJson.get("Weight (KG)");
-           Log.e("Weight value",Weight);
-           WeightValue=Integer.parseInt(Weight);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
+        if(categoryName.equals("Grains")){
+            try {
+                String Weight= (String) attributesJson.get("Weight (KG)");
+                Log.e("Weight value",Weight);
+                WeightValue=Integer.parseInt(Weight);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
         }
+
 
         // Convert JSON object to string and return
         return attributesJson.toString();
@@ -870,7 +964,7 @@ public class UploadActivity extends AppCompatActivity {
     }
 
     public void gotoRecommendation() {
-        Intent i = new Intent(UploadActivity.this, RecommendedPosts.class);
+        Intent i = new Intent(UploadActivity.this, NavigationActivity.class);
         startActivity(i);
     }
 

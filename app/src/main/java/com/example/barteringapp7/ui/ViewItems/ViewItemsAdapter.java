@@ -3,6 +3,7 @@ package com.example.barteringapp7.ui.ViewItems;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,7 +48,10 @@ public class ViewItemsAdapter extends RecyclerView.Adapter<ViewItemsViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ViewItemsViewHolder holder, int position) {
+
         Items currentItem = itemListFiltered.get(position); // Change here
+
+        Log.e("CurrentItem", new Gson().toJson(currentItem));
         String imagePath = RetrofitClient.BASE_URL + "BarteringAppAPI/Content/Images/" + currentItem.getImage_01();
         Picasso.get().load(imagePath).into(holder.image);
         if(currentItem.getProfilePic()!=null){
@@ -55,10 +59,29 @@ public class ViewItemsAdapter extends RecyclerView.Adapter<ViewItemsViewHolder> 
             Picasso.get().load(ProfilePic).into(holder.profile);
 
         }
+        List<String> barterForList=currentItem.getBarterForList();
+
+        String concatenatedBarterFor = "";
+
+        if (barterForList != null && !barterForList.isEmpty()) {
+            // Take the first 2 elements
+            List<String> firstTwoBarterForList = barterForList.size() > 2 ? barterForList.subList(0, 2) : barterForList;
+            concatenatedBarterFor = TextUtils.join(", ", firstTwoBarterForList);
+
+            if (barterForList.size() > 2) {
+                concatenatedBarterFor += "...";
+            }
+        }
+        Log.e("concatenatedBarterFor",concatenatedBarterFor);
+
+        // Assuming you have a TextView in your ViewHolder to display the concatenated barter items
+        holder.BarterFor.setText(concatenatedBarterFor);
+
+
 
         holder.Title.setText(currentItem.getItem_name());
         holder.User.setText(currentItem.getUser_name());
-        holder.BarterFor.setText( currentItem.getBarter_for());
+//        holder.BarterFor.setText( currentItem.getBarter_for());
         String price = String.valueOf(currentItem.getPrice());
         holder.Price.setText(price + "PKR");
         Double ratingDouble = currentItem.getRating(); // Assuming this returns a Double

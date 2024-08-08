@@ -17,6 +17,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -32,6 +33,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toolbar;
 
+import com.example.barteringapp7.BarterForCategory.ActivityBarterForCategory;
 import com.example.barteringapp7.ui.ViewItems.ViewItemsAdapter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -66,6 +68,8 @@ public class ItemDetailsActivity extends AppCompatActivity {
     TextView tvValue;
     Button btnaccept;
     Button btnReject;
+    Button btnEditWishList;
+
 
     TextView txtVerification;
 
@@ -84,6 +88,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_item_details);
          item = (Items) getIntent().getSerializableExtra("item_details");
         txtViewItemValue=findViewById(R.id.txtViewItemValue);
+        btnEditWishList=findViewById(R.id.btnEditWishList);
         attributesContainer = findViewById(R.id.attributesContainer);
         txtVerification = findViewById(R.id.txtVerificationStatus);
 //        img1=findViewById(R.id.imageView1);
@@ -100,6 +105,12 @@ public class ItemDetailsActivity extends AppCompatActivity {
         btnaccept = findViewById(R.id.btnAccept);
         btnReject = findViewById(R.id.btnReject);
         btnMakeOffer=findViewById(R.id.btnMakeOffer);
+
+        String email1=GlobalVariables.getInstance().getEmail();
+        if(email1.equals("trusted")|| email1.equals("Trusted")){
+            btnEditWishList.setVisibility(View.GONE);
+        }
+
 
         btnMakeOffer.setOnClickListener(new OnClickListener() {
             @Override
@@ -127,6 +138,10 @@ public class ItemDetailsActivity extends AppCompatActivity {
         });
 
 
+        SelectedItemsManager selectedItemsManager=SelectedItemsManager.getInstance();
+        selectedItemsManager.clearItems();
+
+
         // Retrieve item details from intent
 
         displayItemDetails(item);
@@ -151,6 +166,16 @@ public class ItemDetailsActivity extends AppCompatActivity {
             btnaccept.setVisibility(View.GONE);
             btnReject.setVisibility(View.GONE);
         }
+        btnEditWishList.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(ItemDetailsActivity.this,ActivityItemdetailsBarterForCategory.class);
+                intent.putExtra("item_details",item);
+                startActivity(intent);
+
+            }
+        });
+
 
         btnaccept.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -335,7 +360,18 @@ private void displayItemDetails(Items item) {
             Items itemDetails = response.body();
             if (itemDetails != null) {
                 tvOwnerName.setText( itemDetails.getUser_name());
-                tvBarterWith.setText("Barter With: " + itemDetails.getBarter_for());
+
+                List<String> barterForList=itemDetails.getBarterForList();
+
+                String concatenatedBarterFor = "";
+
+                if (barterForList != null && !barterForList.isEmpty()) {
+                    // Take the first 2 elements
+                    concatenatedBarterFor = TextUtils.join(", ",barterForList);
+
+
+                }
+                tvBarterWith.setText("Barter With: " + concatenatedBarterFor);
                 tvDescription.setText(itemDetails.getDescription());
                 tvTitle.setText( itemDetails.getItem_name());
                 tvValue.setText(String.valueOf(itemDetails.getPrice()+" Pkr"));
@@ -449,36 +485,49 @@ private void displayItemDetails(Items item) {
         }
     }
 
-    public void hideBarterForButton(){
+    public void hideBarterForButton() {
         APIService apiService = RetrofitClient.getRetrofitInstance().create(APIService.class);
-        String email=GlobalVariables.getInstance().getEmail();
+        String email = GlobalVariables.getInstance().getEmail();
+        Log.e("email in ItemDetails", email);
+
         Call<String> call = apiService.getUserId(email);
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
+                    Log.e("API Response", "Response Body: " + response.body());
+                    try {
+                        int myId = Integer.parseInt(response.body().trim());
+                        int hisId = item.getUserId();
 
-                    int myId=Integer.parseInt(response.body());
-                    int hisId=item.getUserId();
+                        Log.e("His ID", String.valueOf(hisId));
+                        Log.e("My ID", String.valueOf(myId));
 
-                    Log.e("His ID",String.valueOf(hisId));
-                    Log.e("MyId ID",String.valueOf(myId));
+                        if (myId == hisId) {
+                            btnMakeOffer.setVisibility(View.GONE);
+                            btnEditWishList.setVisibility(View.VISIBLE);
 
-                    if(myId==hisId){
-                        btnMakeOffer.setVisibility(View.GONE);
-                    }else{
-                        btnMakeOffer.setVisibility(View.VISIBLE);
+                        } else {
+                            btnMakeOffer.setVisibility(View.VISIBLE);
+                            btnEditWishList.setVisibility(View.GONE);
+
+                        }
+                    } catch (NumberFormatException e) {
+                        Log.e("Parsing Error", "Failed to parse user ID: " + e.getMessage());
                     }
-
+                } else {
+                    Log.e("API Call", "Failed to get user ID");
                 }
             }
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-
+                Log.e("API Call", "Request failed: " + t.getMessage());
             }
         });
     }
+
+
 
 
 }

@@ -64,7 +64,11 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewholder> {
         holder.RequestedItem.setText(currentItem.getRequestedItemName());
         // Convert integer price to String
 
+        String SenderimagePath = RetrofitClient.BASE_URL + "BarteringAppAPI/Content/Images/" + currentItem.getSenderProfilePic();
+        Picasso.get().load(SenderimagePath).into(holder.senderImage);
 
+        String ReceiverimagePath = RetrofitClient.BASE_URL + "BarteringAppAPI/Content/Images/" + currentItem.getReceiverProfilePic();
+        Picasso.get().load(ReceiverimagePath).into(holder.ReceiverImage);
         if("Yes".equals(currentItem.getConfirmOfferRequestReceiver())){
             holder.btnRequestReceiverConfirmation.setEnabled(false);
             holder.btnRequestReceiverConfirmation.setText("Completed");
@@ -102,8 +106,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewholder> {
 
             }
         });
-        holder.btnRequestSenderComfirmation.setVisibility(View.GONE);
-        holder.btnRequestReceiverConfirmation.setVisibility(View.GONE);
+
         holder.btnRequestSenderComfirmation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

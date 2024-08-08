@@ -39,12 +39,12 @@ public class RecyclerView_Adapter<R extends RecyclerView.ViewHolder> extends Rec
         holder.txtRequestedItemName.setText(currentItem.getRequestedItemName());
         Double ratingDouble=currentItem.getRating();
         float ratingFloat = ratingDouble != null ? ratingDouble.floatValue() : 0.0f; // Convert to float, with a default value if null
-
-        if(currentItem.getProfilePic()!=null){
-            String ProfilePic = RetrofitClient.BASE_URL + "BarteringAppAPI/Content/Images/" + currentItem.getProfilePic();
+     
+        if(currentItem.getSenderProfilePic()!=null){
+            String ProfilePic = RetrofitClient.BASE_URL + "BarteringAppAPI/Content/Images/" + currentItem.getSenderProfilePic();
             Picasso.get().load(ProfilePic).into(holder.Profile);
-
         }
+
         holder.ratingBar.setRating(ratingFloat);
 
         holder.btndetails.setOnClickListener(new View.OnClickListener() {

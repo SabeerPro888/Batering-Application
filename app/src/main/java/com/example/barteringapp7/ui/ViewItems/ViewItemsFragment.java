@@ -1,5 +1,6 @@
 package com.example.barteringapp7.ui.ViewItems;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -19,11 +20,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.barteringapp7.APIService;
+import com.example.barteringapp7.AdvancedSearchActivity;
 import com.example.barteringapp7.GlobalVariables;
 import com.example.barteringapp7.Items;
 import com.example.barteringapp7.R;
 import com.example.barteringapp7.RetrofitClient;
 import com.example.barteringapp7.databinding.FragmentViewItemsBinding;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +51,17 @@ public class ViewItemsFragment extends Fragment {
         binding = FragmentViewItemsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        ShapeableImageView imgAdvancedSearch = root.findViewById(R.id.imgAdvancedSearch);
+        imgAdvancedSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Start the SearchActivity
+                Intent intent = new Intent(getActivity(), AdvancedSearchActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
 
 
 
@@ -64,6 +79,8 @@ public class ViewItemsFragment extends Fragment {
             public void onResponse(Call<List<Items>> call, Response<List<Items>> response) {
                 if (response.isSuccessful()) {
                     List<Items> Items = (List<Items>) response.body();
+                    Log.e("Raw JSON", new Gson().toJson(response.body()));
+
                     for(Items b:Items){
                         Log.e("API Call", "Response Message: " + b.getItem_name());
                         Log.e("API Call", "image name Message: " + b.getImage_01());
@@ -119,19 +136,16 @@ public class ViewItemsFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 String searchText = charSequence.toString().trim();
-             objAdapter.getFilter().filter(searchText);
+
+                    objAdapter.getFilter().filter(searchText);
+
+
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
             }
         });
-
-
-
-
-
-
 
 
 

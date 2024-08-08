@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.barteringapp7.APIService;
 import com.example.barteringapp7.Category;
+import com.example.barteringapp7.GlobalVariables;
 import com.example.barteringapp7.Items;
 import com.example.barteringapp7.R;
 import com.example.barteringapp7.RetrofitClient;
@@ -61,6 +62,7 @@ public class UploadItem2Adapter extends RecyclerView.Adapter<UploadItems2ViewHol
             public void onClick(View v) {
                 Intent intent = new Intent(context, SubCategorySelectionActivity.class);
                 intent.putExtra("categoryName", currentItem.getCategory_name());
+                GlobalVariables.getInstance().setCategory(currentItem.getCategory_name());
                 context.startActivity(intent);
             }
         });

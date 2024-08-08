@@ -91,8 +91,8 @@ public class Activity_Offer_Details extends AppCompatActivity {
 
         rating.setRating(ratingFloat);
 
-        if(item.getProfilePic()!=null){
-            String ProfilePic = RetrofitClient.BASE_URL + "BarteringAppAPI/Content/Images/" + item.getProfilePic();
+        if(item.getSenderProfilePic()!=null){
+            String ProfilePic = RetrofitClient.BASE_URL + "BarteringAppAPI/Content/Images/" + item.getSenderProfilePic();
             Picasso.get().load(ProfilePic).into(profilepic);
 
         }

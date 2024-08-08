@@ -78,7 +78,7 @@ public class RecommendedPosts extends AppCompatActivity {
     public void getRecommendedPosts() {
         APIService apiService = RetrofitClient.getRetrofitInstance().create(APIService.class);
         String email = GlobalVariables.getInstance().getEmail();
-        Call<List<Items>> call = apiService.GetRecommendationLastUploaded(email);
+        Call<List<Items>> call = apiService.getRecommendedPosts(email);
         call.enqueue(new Callback<List<Items>>() {
 
             @Override

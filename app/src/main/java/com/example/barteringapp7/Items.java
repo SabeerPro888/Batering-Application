@@ -4,11 +4,22 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class Items implements Serializable {
+public class Items implements Serializable  {
     public String getItem_name() {
         return Item_name;
+    }
+
+    public List<String> BarterItems;
+
+    public List<String> getBarterForList() {
+        return BarterItems;
+    }
+
+    public void setBarterForList(List<String> barterForList) {
+        BarterItems = barterForList;
     }
 
     public void setItem_name(String item_name) {

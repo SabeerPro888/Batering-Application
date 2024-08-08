@@ -44,6 +44,7 @@ public class SubCategorySelectionActivity extends AppCompatActivity {
                     Intent intent = new Intent(SubCategorySelectionActivity.this, UploadActivity.class);
                     intent.putExtra("subcategoryName", selectedItem);
                     intent.putExtra("CategoryName", categoryName);
+                    GlobalVariables.getInstance().setSubCategory(selectedItem);
 
                     startActivity(intent);
                 }

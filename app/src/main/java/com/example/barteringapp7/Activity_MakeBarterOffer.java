@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -56,6 +58,27 @@ public class Activity_MakeBarterOffer extends AppCompatActivity {
         }
 
         Price = findViewById(R.id.txtMoney);
+
+        Price.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // No action needed here
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // No action needed here
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String priceText = s.toString();
+                if (!priceText.isEmpty() && !priceText.matches("\\d+")) {
+                    Price.setError("Input must be in numbers");
+                }
+            }
+        });
+
 
 
         TextView toolbarTitle = findViewById(R.id.toolbar_title);

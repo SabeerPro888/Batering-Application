@@ -17,16 +17,24 @@ public class ViewRequestsInformation implements Serializable {
     String ConfirmOfferRequestReceiver;
     String ConfirmOfferRequestSeder;
 
-    public String getProfilePic() {
-        return ProfilePic;
+    public String getSenderProfilePic() {
+        return SenderProfilePic;
     }
 
-    public void setProfilePic(String profilePic) {
-        ProfilePic = profilePic;
+    public void setSenderProfilePic(String senderProfilePic) {
+        SenderProfilePic = senderProfilePic;
     }
 
-    String ProfilePic;
+    public String getReceiverProfilePic() {
+        return ReceiverProfilePic;
+    }
 
+    public void setReceiverProfilePic(String receiverProfilePic) {
+        ReceiverProfilePic = receiverProfilePic;
+    }
+
+    public String SenderProfilePic;
+    public String ReceiverProfilePic;
     public String getConfirmOfferRequestReceiver() {
         return ConfirmOfferRequestReceiver;
     }

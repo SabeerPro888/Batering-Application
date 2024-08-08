@@ -1,6 +1,7 @@
 package com.example.barteringapp7;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,7 +43,21 @@ public class RecyclerView_MakeBarterOfferAdapter extends RecyclerView.Adapter<Re
         String imagePath = RetrofitClient.BASE_URL + "BarteringAppAPI/Content/Images/" + currentItem.getImage_01();
         Picasso.get().load(imagePath).into(holder.image);
         holder.Title.setText(currentItem.getItem_name());
-        holder.BarterFor.setText(currentItem.getBarter_for());
+//        holder.BarterFor.setText(currentItem.getBarter_for());
+        List<String> barterForList=currentItem.getBarterForList();
+
+        String concatenatedBarterFor = "";
+
+        if (barterForList != null && !barterForList.isEmpty()) {
+            // Take the first 2 elements
+            concatenatedBarterFor = TextUtils.join(", ", barterForList);
+
+            if (barterForList.size() > 2) {
+                concatenatedBarterFor += "...";
+            }
+        }
+        holder.BarterFor.setText(concatenatedBarterFor);
+
         // Convert integer price to String
         holder.Price.setText(String.valueOf(currentItem.getPrice()));
 
